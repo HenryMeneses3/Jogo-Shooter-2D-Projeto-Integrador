@@ -1,4 +1,7 @@
+#include "config.h"
 #include "recursos.h"
+#include "cenas.h"
+#include "objetos.h"
 #include "input.h"
 
 void comecar_loop_de_eventos(void)
@@ -32,6 +35,23 @@ void comecar_loop_de_eventos(void)
 
         case ALLEGRO_EVENT_KEY_UP:
             estado_tecla[evento.keyboard.keycode] = false;
+            break;
+
+        case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+            estado_mouse[evento.mouse.button] = true;
+            mouse_apertado(evento.mouse.button, evento.mouse.x, evento.mouse.y);
+            break;
+
+        case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+            estado_mouse[evento.mouse.button] = false;
+            break;
+
+        case ALLEGRO_EVENT_MOUSE_AXES:
+            if (evento.mouse.dx != 0 && evento.mouse.dy != 0)
+            {
+                mouse_x = evento.mouse.x;
+                mouse_y = evento.mouse.y;
+            }
             break;
         }
 

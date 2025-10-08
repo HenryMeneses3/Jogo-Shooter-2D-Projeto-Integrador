@@ -1,3 +1,4 @@
+
 #ifndef RECURSOS_H
 #define RECURSOS_H
 
@@ -9,40 +10,36 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 
-#define VELOCIDADE_ATAQUE 15
-#define VELOCIDADE_PERSONAGEM 5
-#define MAX_TIROS 3
-#define MAX_COOLDOWN 0.2
-#define LEVEL_INICIAL 1
-
-extern int i;
-extern int j;
-extern const int FPS;
-extern const int TELA_W;
-extern const int TELA_H;
-
-enum 
-{
-    CENA_MENU = 1,
-    CENA_LEVEL_1,
-    CENA_LEVEL_2,
-    CENA_LEVEL_3,
-    CENA_GAMEOVER
-};
-
-extern int cena_atual;
-
-extern const int level1Chao;
-
 extern ALLEGRO_DISPLAY* display;
 extern ALLEGRO_EVENT_QUEUE* fila_de_evento;
 extern ALLEGRO_TIMER* timer;
 
+// fontes
+extern ALLEGRO_FONT* fonte_inimigo;
+extern ALLEGRO_FONT* fonte_score;
+extern ALLEGRO_FONT* fonte_gameOver;
 
+// imagens
+extern ALLEGRO_BITMAP* botao_1;
+extern ALLEGRO_BITMAP* tela_inicial_imagem;
 extern ALLEGRO_BITMAP* level_1_imagem;
-
+extern ALLEGRO_BITMAP* level_2_imagem;
+extern ALLEGRO_BITMAP* level_3_imagem;
+extern ALLEGRO_BITMAP* game_over_imagem;
+extern ALLEGRO_BITMAP* game_over_botao;
+extern ALLEGRO_BITMAP* inimigo_1_imagem;
+extern ALLEGRO_BITMAP* inimigo_2_imagem;
+extern ALLEGRO_BITMAP* inimigo_3_imagem;
+extern ALLEGRO_BITMAP* personagem_imagem;
+extern ALLEGRO_BITMAP* vida_imagem;
 extern ALLEGRO_BITMAP* ataque_imagem;
 
-extern ALLEGRO_BITMAP* personagem_imagem;
+// sons
+extern ALLEGRO_SAMPLE* level_1_bgm;
+extern ALLEGRO_SAMPLE_ID level_1_bgm_id;
+extern ALLEGRO_SAMPLE* game_over_bgm;
+extern ALLEGRO_SAMPLE_ID game_over_bgm_id;
+extern ALLEGRO_SAMPLE* botao_som;
+extern ALLEGRO_SAMPLE_ID botao_som_id;
 
 #endif
