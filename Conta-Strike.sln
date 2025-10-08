@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Conta-Strike", "Conta-Strike\Conta-Strike.vcxproj", "{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Debug|x64.ActiveCfg = Debug|x64
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Debug|x64.Build.0 = Debug|x64
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Debug|x86.ActiveCfg = Debug|Win32
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Debug|x86.Build.0 = Debug|Win32
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Release|x64.ActiveCfg = Release|x64
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Release|x64.Build.0 = Release|x64
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Release|x86.ActiveCfg = Release|Win32
+		{10BED22D-8B83-4BE5-9D7D-A55B127E3CFC}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {732C1D59-4A95-4068-9B92-6C940398C839}
+	EndGlobalSection
+EndGlobal
