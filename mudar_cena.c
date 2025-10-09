@@ -11,6 +11,8 @@
 void mudar_de_cena(int proxima_cena)
 {
 
+    pontos = 0;
+
     if (cena_atual == CENA_LEVEL_1)
     {
         al_stop_sample(&level_1_bgm_id);
@@ -78,6 +80,15 @@ void mudar_de_cena(int proxima_cena)
             resetar_inimigo(&inimigos[i]); //spawna inimigos
         }
     }
+
+    else if (CENA_LEVEL_2)
+    {
+        personagem.escondido = false;
+        personagem.vida = VIDA_INICIAL;
+        personagem.x = TELA_W / 2 - personagem.w / 2;
+        personagem.direcao = 0;
+        personagem.frame = 0;
+    }
 }
 
 void destruir_cena(int cena)
@@ -92,7 +103,8 @@ void destruir_cena(int cena)
 
     else if (cena == CENA_LEVEL_2)
     {
-
+       printf("Destruindo level 2\n");
+       al_destroy_bitmap(level_2_imagem);
     }
 
     else if (cena == CENA_GAMEOVER)

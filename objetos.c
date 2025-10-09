@@ -7,8 +7,10 @@
 #include "cenas.h"
 #include "objetos.h"
 #include "input.h"
+#include "colisoes.h"
 
 bool hitbox_em_um_retangulo(int posXp, int posYp, int pW, int pH, int posXret, int posYret, int retH, int retW);
+
 
 void resetar_inimigo(ObjetoMovel* inimigo)
 {
@@ -74,6 +76,7 @@ void atualizar_inimigo()
                 resetar_inimigo(&inimigos[i]);
             }
         }
+		
     }
 }
 
@@ -136,37 +139,12 @@ void atualizar_personagem(void)
         }
         personagem.anim_contador = 0; // se parado contador volta ao zero, evita dele começar num sprite errado dps de ficar parado
     }
-
-    // PERSONAGEM PRESO NA TELA
-    if (cena_atual == CENA_LEVEL_1)
+	// checa se personagem ta saindo da tela
+    checar_colisao_personagem(&personagem);
+    for(i = 0; i < MAX_INIMIGOS; i++)
     {
-        if (personagem.x < 0) // se personagem tentar passar da tela pela esquerda
-            personagem.x = 0; // posicao x (canto superior esquerdo) volta pra zero, ele meio q teleporta de volta
-        else                  // mesma coisa so que pro final da tela
-        {
-            if (personagem.x > TELA_W - personagem.w) // como x ta no lado esquerdo superior do sprite tive q fazer - a largura do sprite
-                personagem.x = TELA_W - personagem.w;
-        }
-        if (personagem.y - personagem.h / 2 < level1Floor - personagem.h / 2) // variavel daonde o chao começa no level 1,
-            personagem.y = level1Floor; // escrevi em cima personagem.y - personagem.h / 2 pra ele passar metade do corpo e dar um efeito legal
-        else
-        {
-            if (personagem.y > TELA_H - personagem.h)
-                personagem.y = TELA_H - personagem.h;
-        }
-
-        for (i = 0; i < MAX_INIMIGOS; i++)
-        {
-            if (inimigos[i].escondido)
-                continue; // deixei menos 12 embaixo pra tentar ficar com um hitbox menor)
-            if (hitbox_em_um_retangulo(personagem.x + 12, personagem.y + 13, personagem.w - 12, personagem.h - 13, inimigos[i].x, inimigos[i].y, inimigos[i].h, inimigos[i].w))
-            {
-                printf("Ai nao po, tomou dano!\n");
-                personagem.vida--;
-                resetar_inimigo(&inimigos[i]);
-            }
-        }
-    }
+        checar_colisao_personagem_inimigo(&personagem, &inimigos[i]);
+	}
 }
 
 void atualizar_tiro()
@@ -236,26 +214,29 @@ void atualizar_tiro()
         }
     }
 
-    for (i = 0; i < MAX_TIROS; i++)
+    if(cena_atual == CENA_LEVEL_1)
     {
-        if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
-            continue;//ignora
-        for (j = 0; j < MAX_INIMIGOS; j++)
+        for (i = 0; i < MAX_TIROS; i++)
         {
-            if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, inimigos[j].x, inimigos[j].y, inimigos[j].h, inimigos[j].w))
+            if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
+                continue;//ignora
+            for (j = 0; j < MAX_INIMIGOS; j++)
             {
-                if (inimigos[j].inimigo)//se a expressao for um inimigo
+                if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, inimigos[j].x, inimigos[j].y, inimigos[j].h, inimigos[j].w))
                 {
-                    printf("Boa, matou uma errata\n");
-                    pontos += 10;
+                    if (inimigos[j].inimigo)//se a expressao for um inimigo
+                    {
+                        printf("Boa, matou uma errata\n");
+                        pontos += 10;
+                    }
+                    else
+                    {
+                        printf("Ah nao, essa expressao era correta\n");
+                        personagem.vida--;
+                    }
+                    resetar_inimigo(&inimigos[j]);
+                    ataque[i].escondido = true;
                 }
-                else
-                {
-                    printf("Ah nao, essa expressao era correta\n");
-                    personagem.vida--;
-                }
-                resetar_inimigo(&inimigos[j]);
-                ataque[i].escondido = true;
             }
         }
     }

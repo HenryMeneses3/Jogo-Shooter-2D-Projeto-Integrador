@@ -12,6 +12,9 @@ const int FPS = 60;
 const int TELA_W = 1280;
 const int TELA_H = 720;
 const int level1Floor = 320;
+const int level2Floor = 570;
+const int level2Right = 1190;
+const int level2Left = 80;
 int cena_atual;
 
 int pontos = 0;
@@ -129,7 +132,8 @@ void inicializar_allegro5(void)
     const unsigned int botoes_mouse = al_get_mouse_num_buttons();
     estado_mouse = malloc((botoes_mouse + 1) * sizeof(bool));
 
-    memset(estado_mouse, false, (botoes_mouse + 1) * sizeof(bool));
+    if(estado_mouse != NULL)
+        memset(estado_mouse, false, (botoes_mouse + 1) * sizeof(bool));
 
     // registrar eventos do display, timer, mouse e teclado para fila de eventos.
     al_register_event_source(fila_de_evento, al_get_display_event_source(display));
@@ -225,6 +229,17 @@ void inicializar_cena(int cena)
             exit(-1);
         }
     }
+    
+    else if(cena == CENA_LEVEL_2)
+    {
+        level_2_imagem = al_load_bitmap("./assets/level2background.png");
+        if (!level_2_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
+            exit(-1);
+        }
+
+    }
 
     else if(cena == CENA_GAMEOVER)
     {
@@ -258,7 +273,6 @@ void destruir_jogo()
     al_uninstall_keyboard();
     al_uninstall_mouse();
     al_destroy_font(fonte_score);
-    al_destroy_font(fonte_gameOver);
     al_destroy_timer(timer);
     al_destroy_event_queue(fila_de_evento);
     al_destroy_display(display);

@@ -6,7 +6,8 @@ enum {
     CENA_LEVEL_1,
     CENA_LEVEL_2,
     CENA_LEVEL_3,
-    CENA_GAMEOVER
+    CENA_GAMEOVER,
+    CENA_CONFIG
 };
 
 extern int cena_atual;

@@ -141,19 +141,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cenas.h" />
+    <ClInclude Include="colisoes.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="objetos.h" />
     <ClInclude Include="recursos.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cenas.c" />
     <ClCompile Include="colisoes.c" />
-    <ClCompile Include="comecar_loop_eventos.c" />
     <ClCompile Include="desenhar_jogo.c" />
+    <ClCompile Include="inicializar_jogo.c" />
+    <ClCompile Include="loop_eventos.c" />
+    <ClCompile Include="mudar_cena.c" />
     <ClCompile Include="objetos.c" />
     <ClCompile Include="expressoes.c" />
-    <ClCompile Include="iniciar_jogo.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

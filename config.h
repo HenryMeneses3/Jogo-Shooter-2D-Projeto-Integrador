@@ -20,6 +20,9 @@ extern const int FPS;
 extern const int TELA_W;
 extern const int TELA_H;
 extern const int level1Floor;
+extern const int level2Floor;
+extern const int level2Right;
+extern const int level2Left;
 
 extern int pontos;
 
