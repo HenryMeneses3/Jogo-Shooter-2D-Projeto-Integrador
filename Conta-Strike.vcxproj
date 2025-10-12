@@ -148,6 +148,7 @@
     <ClInclude Include="recursos.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="atualizar_jogo.c" />
     <ClCompile Include="colisoes.c" />
     <ClCompile Include="desenhar_jogo.c" />
     <ClCompile Include="inicializar_jogo.c" />

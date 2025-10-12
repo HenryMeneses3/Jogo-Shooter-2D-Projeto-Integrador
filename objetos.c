@@ -32,12 +32,12 @@ void resetar_inimigo(ObjetoMovel* inimigo)
     if (inimigo->direcao == DIREITA) // vai VIR da direita
     {
         inimigo->x = TELA_W;
-        inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - al_get_bitmap_width(ataque_imagem)));
+        inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2));
     }
     else if (inimigo->direcao == ESQUERDA) // vai VIR da esquerda
     {
         inimigo->x = 0 - inimigo->w;
-        inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor -  (int)inimigo->h - al_get_bitmap_width(ataque_imagem))); // 2*inimigo.h pq nao quero que ele fic
+		inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2)); // 2*ataque pq quero que ele nasca um pouco acima do chao
     }
     else if (inimigo->direcao == BAIXO) // vai VIR de baixo
     {
@@ -139,6 +139,14 @@ void atualizar_personagem(void)
         }
         personagem.anim_contador = 0; // se parado contador volta ao zero, evita dele começar num sprite errado dps de ficar parado
     }
+
+    if (personagem.vida <= 0)
+    {
+        cena_atual_temp = cena_atual;
+        destruir_cena(cena_atual);
+        mudar_de_cena(CENA_GAMEOVER);
+        printf("GAMEOVER!\n");
+    }
 	// checa se personagem ta saindo da tela
     checar_colisao_personagem(&personagem);
     for(i = 0; i < MAX_INIMIGOS; i++)
@@ -211,33 +219,6 @@ void atualizar_tiro()
             if (ataque[i].y < 0 - ataque[i].h && agora - ultimo_tiro >= MAX_COOLDOWN)
                 ataque[i].escondido = true;// se passar da tela esconde
             break;
-        }
-    }
-
-    if(cena_atual == CENA_LEVEL_1)
-    {
-        for (i = 0; i < MAX_TIROS; i++)
-        {
-            if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
-                continue;//ignora
-            for (j = 0; j < MAX_INIMIGOS; j++)
-            {
-                if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, inimigos[j].x, inimigos[j].y, inimigos[j].h, inimigos[j].w))
-                {
-                    if (inimigos[j].inimigo)//se a expressao for um inimigo
-                    {
-                        printf("Boa, matou uma errata\n");
-                        pontos += 10;
-                    }
-                    else
-                    {
-                        printf("Ah nao, essa expressao era correta\n");
-                        personagem.vida--;
-                    }
-                    resetar_inimigo(&inimigos[j]);
-                    ataque[i].escondido = true;
-                }
-            }
         }
     }
 }

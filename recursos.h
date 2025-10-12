@@ -13,15 +13,22 @@
 extern ALLEGRO_DISPLAY* display;
 extern ALLEGRO_EVENT_QUEUE* fila_de_evento;
 extern ALLEGRO_TIMER* timer;
+extern ALLEGRO_TIMER* cutscene_timer;
 
 // fontes
 extern ALLEGRO_FONT* fonte_inimigo;
 extern ALLEGRO_FONT* fonte_score;
 extern ALLEGRO_FONT* fonte_gameOver;
+extern ALLEGRO_FONT* fonte_instrucoes;
+extern ALLEGRO_FONT* fonte_titulo;
 
 // imagens
 extern ALLEGRO_BITMAP* botao_1;
+extern ALLEGRO_BITMAP* botao_2;
+extern ALLEGRO_BITMAP* botao_tecla_wasd;
+extern ALLEGRO_BITMAP* botao_tecla_space;
 extern ALLEGRO_BITMAP* tela_inicial_imagem;
+extern ALLEGRO_BITMAP* cutscene_1_imagem;
 extern ALLEGRO_BITMAP* level_1_imagem;
 extern ALLEGRO_BITMAP* level_2_imagem;
 extern ALLEGRO_BITMAP* level_3_imagem;

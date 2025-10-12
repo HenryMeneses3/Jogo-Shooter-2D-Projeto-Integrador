@@ -3,6 +3,7 @@
 #include "cenas.h"
 #include "objetos.h"
 #include "input.h"
+#include "colisoes.h"
 
 void comecar_loop_de_eventos(void)
 {
@@ -25,6 +26,7 @@ void comecar_loop_de_eventos(void)
             if (evento.timer.source == timer)
             {
                 redraws++;
+				personagem.invencibilidade_timer -= 1.0 / FPS;
             }
             break;
 

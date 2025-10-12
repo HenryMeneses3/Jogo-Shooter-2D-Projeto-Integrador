@@ -27,6 +27,7 @@ typedef struct
     int frame, max_frames; // contagem de frames
     int direcao;// direcao
     int anim_contador, anim_max; // flag pra mudar frame
+	float invencibilidade_timer; // tempo restante de invencibilidade
 } ObjetoMovel;
 
 

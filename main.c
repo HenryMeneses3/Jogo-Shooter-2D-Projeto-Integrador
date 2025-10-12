@@ -9,33 +9,6 @@
 #include "input.h"
 
 
-
-void atualizar_jogo(void);
-
-void atualizar_jogo(void) 
-{
-    atualizar_personagem();
-    atualizar_tiro();
-
-    if (cena_atual == CENA_LEVEL_1) 
-    {
-        atualizar_inimigo();
-        if (personagem.vida <= 0)
-        {
-            destruir_cena(cena_atual);
-            mudar_de_cena(CENA_GAMEOVER);
-            printf("GAMEOVER!\n");
-        }
-        if (pontos >= 10)
-        {
-            destruir_cena(cena_atual);
-            mudar_de_cena(CENA_LEVEL_2);
-            printf("Fase 2!\n");
-        }
-
-    }
-}
-
 int main()
 {
     srand(time(NULL));

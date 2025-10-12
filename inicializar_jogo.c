@@ -15,7 +15,12 @@ const int level1Floor = 320;
 const int level2Floor = 570;
 const int level2Right = 1190;
 const int level2Left = 80;
+const int level3Floor = 275;
+const int tamanho_quadrante_cutscene = 253;
+int cutscene_quadrante_atual = 1;
+int max_quadrantes_cutscene = 4;
 int cena_atual;
+int cena_atual_temp = 1;
 
 int pontos = 0;
 
@@ -31,13 +36,20 @@ int mouse_x, mouse_y;
 ALLEGRO_DISPLAY* display;
 ALLEGRO_EVENT_QUEUE* fila_de_evento;
 ALLEGRO_TIMER* timer;
+ALLEGRO_TIMER* cutscene_timer;
 
 ALLEGRO_FONT* fonte_inimigo;
 ALLEGRO_FONT* fonte_score;
 ALLEGRO_FONT* fonte_gameOver;
+ALLEGRO_FONT* fonte_instrucoes;
+ALLEGRO_FONT* fonte_titulo;
 
 ALLEGRO_BITMAP* botao_1;
+ALLEGRO_BITMAP* botao_2;
+ALLEGRO_BITMAP* botao_tecla_wasd;   
+ALLEGRO_BITMAP* botao_tecla_space;
 ALLEGRO_BITMAP* tela_inicial_imagem;
+ALLEGRO_BITMAP* cutscene_1_imagem;
 ALLEGRO_BITMAP* level_1_imagem;
 ALLEGRO_BITMAP* level_2_imagem;
 ALLEGRO_BITMAP* level_3_imagem;
@@ -93,11 +105,36 @@ void inicializar_allegro5(void)
         exit(-1);
     }
 
-    al_init_primitives_addon();
-    al_install_keyboard();
-    al_install_mouse();
-    al_init_font_addon();
-    al_init_ttf_addon();
+    if(!al_init_primitives_addon())
+    {
+        fprintf(stderr, "Erro ao inicializar Primitives Addon!\n");
+        exit(-1);
+	}
+    
+    if(!al_install_keyboard())
+    {
+        fprintf(stderr, "Erro ao inicializar teclado!\n");
+        exit(-1);
+	}
+    
+    if (!al_install_mouse())
+    {
+        fprintf(stderr, "Erro ao inicializar mouse!\n");
+        exit(-1);
+    }
+
+    if (!al_init_font_addon())
+    {
+        fprintf(stderr, "Erro ao inicializar Font Addon!\n");
+        exit(-1);
+    }
+    
+    if (!al_init_ttf_addon())
+    {
+        fprintf(stderr, "Erro ao inicializar TTF Addon!\n");
+        exit(-1);
+    }
+
 
     // criar display do jogo
     display = al_create_display(TELA_W, TELA_H);
@@ -106,12 +143,12 @@ void inicializar_allegro5(void)
         fprintf(stderr, "Erro ao criar display!\n");
         exit(-1);
     }
+
     al_set_window_title(display, "Conta-Strike");
     al_set_window_position(display, 300, 300);
 
     // timer de update
     timer = al_create_timer(1.0f / FPS);
-
     if (!timer)
     {
         fprintf(stderr, "Erro ao criar timer!\n");
@@ -131,7 +168,6 @@ void inicializar_allegro5(void)
 
     const unsigned int botoes_mouse = al_get_mouse_num_buttons();
     estado_mouse = malloc((botoes_mouse + 1) * sizeof(bool));
-
     if(estado_mouse != NULL)
         memset(estado_mouse, false, (botoes_mouse + 1) * sizeof(bool));
 
@@ -148,19 +184,19 @@ void inicializar_jogo()
 {
     printf("Iniciando jogo! =D\n");
 
-    fonte_inimigo = al_load_ttf_font("./assets/Fonte_inimigo.ttf", 26, 0);
-    if (!fonte_inimigo)
-    {
-        fprintf(stderr, "Erro ao carregar fonte inimigo!\n");
-        exit(-1);
-    }
-
     botao_1 = al_load_bitmap("./assets/botao.png");
     if (!botao_1)
     {
         fprintf(stderr, "Erro ao carregar imagem do botao!\n");
         exit(-1);
     }
+    
+	botao_2 = al_load_bitmap("./assets/botao_2.png");
+    if(!botao_2)
+    {
+        fprintf(stderr, "Erro ao carregar imagem do botao 2!\n");
+        exit(-1);
+	}
 
     botao_som = al_load_sample("./assets/Sound_effect/botao.ogg");
     if (!botao_som)
@@ -197,17 +233,106 @@ void inicializar_jogo()
         exit(-1);
     }
 
-    mudar_de_cena(CENA_LEVEL_1);
+
+    // Personagem
+    personagem.img = personagem_imagem;
+    personagem.w = al_get_bitmap_width(personagem.img) / 4;  // largura do sprite
+    personagem.h = al_get_bitmap_height(personagem.img) / 4; // altura do sprite
+    personagem.vx = VELOCIDADE_PERSONAGEM;                   // velocidade eixo x do personagem
+    personagem.vy = VELOCIDADE_PERSONAGEM;                   // velocidade eixo y do personagem
+    personagem.max_frames = 4;                               // sprite sheet de 4 frames pro loop
+    personagem.anim_contador = 0;                            // contador que vai receber as velocidades x e y
+    personagem.anim_max = 50;                                // indexador para usar velocidade vx e vy como base na velocidade da mudança do sprite
+    personagem.sprite_sheet = true;
+
+    // Ataque
+    for (i = 0; i < MAX_TIROS; i++)
+    {
+        ataque[i].img = ataque_imagem;
+        ataque[i].w = al_get_bitmap_width(ataque_imagem);
+        ataque[i].h = al_get_bitmap_height(ataque_imagem);
+        ataque[i].vx = VELOCIDADE_ATAQUE;
+        ataque[i].vy = VELOCIDADE_ATAQUE;
+        ataque[i].escondido = true;
+        ataque[i].sprite_sheet = false;
+    }
+
+    mudar_de_cena(CENA_MENU);
 }
 
 void inicializar_cena(int cena) 
 {
     if(cena == CENA_MENU)
     {
+        tela_inicial_imagem = al_load_bitmap("./assets/telaInicial.png");
+        if (!tela_inicial_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da tela inicial!\n");
+            exit(-1);
+        }
+
+        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
+        if (!fonte_gameOver)
+        {
+            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
+            exit(-1);
+        }
+
+		fonte_titulo = al_load_ttf_font("./assets/fonteTitulo.ttf", 80, 0);
+        if (!fonte_titulo)
+        {
+            fprintf(stderr, "Erro ao carregar fonte do titulo!\n");
+            exit(-1);
+        }
     }
+    
+    else if(cena == CENA_COMO_JOGAR)
+    {
+        fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 15, 0);
+        if (!fonte_instrucoes)
+        {
+            fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
+            exit(-1);
+        }
+
+		botao_tecla_wasd = al_load_bitmap("./assets/tecla_wasd.png");
+        if (!botao_tecla_wasd)
+        {
+            fprintf(stderr, "Erro ao carregar imagem do botao tecla wasd!\n");
+            exit(-1);
+        }
+
+		botao_tecla_space = al_load_bitmap("./assets/tecla_espaco.png");
+        if(!botao_tecla_space)
+        {
+            fprintf(stderr, "Erro ao carregar imagem do botao tecla space!\n");
+            exit(-1);
+		}
+
+    }
+
+    else if(cena == CENA_CUTSCENE1)
+    {
+        printf("Iniciando cutscene 1\n");
+        cutscene_1_imagem = al_load_bitmap("./assets/cutscene1.png");
+        if (!cutscene_1_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da cutscene 1!\n");
+            exit(-1);
+        }
+
+		cutscene_timer = al_create_timer(1.0 / 1.0); // timer de 1 segundo para a cutscene
+        if (!cutscene_1_imagem)
+        {
+            fprintf(stderr, "Erro ao criar timer da cutscene!\n");
+            exit(-1);
+        }
+	}
 
     else if(cena == CENA_LEVEL_1)
     {
+        printf("Iniciando level 1\n");
+
         level_1_bgm = al_load_sample("./assets/Background_music/level_1_background.ogg");
         if (!level_1_bgm)
         {
@@ -228,10 +353,27 @@ void inicializar_cena(int cena)
             fprintf(stderr, "Erro ao carregar fonte gameover!\n");
             exit(-1);
         }
+
+		fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 15, 0);
+        if(!fonte_instrucoes)
+        {
+            fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
+            exit(-1);
+		}
+
+        fonte_inimigo = al_load_ttf_font("./assets/Fonte_inimigo.ttf", 26, 0);
+        if (!fonte_inimigo)
+        {
+            fprintf(stderr, "Erro ao carregar fonte inimigo!\n");
+            exit(-1);
+        }
+
     }
     
     else if(cena == CENA_LEVEL_2)
     {
+        printf("Iniciando level 2\n");
+
         level_2_imagem = al_load_bitmap("./assets/level2background.png");
         if (!level_2_imagem)
         {
@@ -241,8 +383,20 @@ void inicializar_cena(int cena)
 
     }
 
+    else if(cena == CENA_LEVEL_3)
+    {
+        printf("Iniciando level 3\n");
+        level_3_imagem = al_load_bitmap("./assets/level3background.png");
+        if (!level_3_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem do terceiro mapa!\n");
+            exit(-1);
+        }
+	}
+
     else if(cena == CENA_GAMEOVER)
     {
+        printf("Iniciando tela de game over\n");
         game_over_imagem = al_load_bitmap("./assets/GameOver.png");
         if (!game_over_imagem)
         {
@@ -264,6 +418,61 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
+    }
+}
+
+void destruir_cena(int cena)
+{
+    if (cena == CENA_MENU)
+    {
+        printf("Destruindo menu\n");
+        al_destroy_bitmap(tela_inicial_imagem);
+        al_destroy_font(fonte_gameOver);
+        al_destroy_font(fonte_titulo);
+    }
+
+    else if(cena == CENA_COMO_JOGAR)
+    {
+        printf("Destruindo como jogar\n");
+        al_destroy_font(fonte_instrucoes);
+		al_destroy_bitmap(botao_tecla_wasd);
+		al_destroy_bitmap(botao_tecla_space);
+    }
+
+    else if (cena == CENA_CUTSCENE1)
+    {
+        printf("Destruindo cutscene 1\n");
+        al_destroy_bitmap(cutscene_1_imagem);
+	}
+
+    else if (cena == CENA_LEVEL_1)
+    {
+        printf("Destruindo level 1\n");
+        al_destroy_bitmap(level_1_imagem);
+        al_destroy_sample(level_1_bgm);
+        al_destroy_font(fonte_gameOver);
+        al_destroy_font(fonte_inimigo);
+        al_destroy_font(fonte_instrucoes);
+    }
+
+    else if (cena == CENA_LEVEL_2)
+    {
+        printf("Destruindo level 2\n");
+        al_destroy_bitmap(level_2_imagem);
+    }
+
+    else if (cena == CENA_LEVEL_3)
+    {
+        printf("Destruindo level 3\n");
+        al_destroy_bitmap(level_3_imagem);
+    }
+
+    else if (cena == CENA_GAMEOVER)
+    {
+        printf("Destruindo game over\n");
+        al_destroy_bitmap(game_over_imagem);
+        al_destroy_sample(game_over_bgm);
+        al_destroy_font(fonte_gameOver);
     }
 }
 
