@@ -42,11 +42,12 @@ void mouse_apertado(int botao, int x, int y)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
                 destruir_cena(CENA_MENU);
-                mudar_de_cena(CENA_LEVEL_1);
+                mudar_de_cena(CENA_CUTSCENE1);
             }
             else if (como_jogar)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
+				destruir_cena(CENA_MENU);
 				mudar_de_cena(CENA_COMO_JOGAR);
             }
         }
@@ -165,12 +166,9 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
                 continue;
             if (hitbox_em_um_retangulo(personagem->x + 12, personagem->y + 13, personagem->w - 12, personagem->h - 13, inimigos[i].x, inimigos[i].y, inimigos[i].h, inimigos[i].w)) // deixei menos 12 pra tentar ficar com um hitbox menor
             {
-                if (personagem->invencibilidade_timer <= 0.0f) // Só toma dano se não estiver invencível
-                {
                     printf("Cuidado, -1 Vida!\n");
                     personagem->vida--;
-                    personagem->invencibilidade_timer = TEMPO_INVENCIBILIDADE; // Ativa invencibilidade
-                }
+                
                 resetar_inimigo(&inimigos[i]);
             }
         }

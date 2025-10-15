@@ -143,6 +143,7 @@
     <ClInclude Include="cenas.h" />
     <ClInclude Include="colisoes.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="funcoes_principais.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="objetos.h" />
     <ClInclude Include="recursos.h" />

@@ -11,16 +11,21 @@ int i, j;
 const int FPS = 60;
 const int TELA_W = 1280;
 const int TELA_H = 720;
+
+int cena_atual;
+int cena_atual_temp;
+
+const int tamanho_quadrante_cutscene = 253;
+int cutscene_quadrante_atual;
+float alpha_quadrante[NUM_MAX_QUADRANTES];
+
 const int level1Floor = 320;
+
 const int level2Floor = 570;
 const int level2Right = 1190;
 const int level2Left = 80;
+
 const int level3Floor = 275;
-const int tamanho_quadrante_cutscene = 253;
-int cutscene_quadrante_atual = 1;
-int max_quadrantes_cutscene = 4;
-int cena_atual;
-int cena_atual_temp = 1;
 
 int pontos = 0;
 
@@ -63,6 +68,8 @@ ALLEGRO_SAMPLE_ID game_over_bgm_id;
 
 ALLEGRO_SAMPLE* botao_som;
 ALLEGRO_SAMPLE_ID botao_som_id;
+ALLEGRO_SAMPLE* som_cutscene;
+ALLEGRO_SAMPLE_ID som_cutscene_id;
 
 ALLEGRO_BITMAP* inimigo_1_imagem;
 ALLEGRO_BITMAP* inimigo_2_imagem;
@@ -146,6 +153,8 @@ void inicializar_allegro5(void)
 
     al_set_window_title(display, "Conta-Strike");
     al_set_window_position(display, 300, 300);
+
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
     // timer de update
     timer = al_create_timer(1.0f / FPS);
@@ -264,6 +273,8 @@ void inicializar_cena(int cena)
 {
     if(cena == CENA_MENU)
     {
+		printf("Iniciando menu\n");
+
         tela_inicial_imagem = al_load_bitmap("./assets/telaInicial.png");
         if (!tela_inicial_imagem)
         {
@@ -288,8 +299,10 @@ void inicializar_cena(int cena)
     
     else if(cena == CENA_COMO_JOGAR)
     {
-        fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 15, 0);
-        if (!fonte_instrucoes)
+		printf("Iniciando como jogar\n");
+
+        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
+        if (!fonte_gameOver)
         {
             fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
             exit(-1);
@@ -314,6 +327,14 @@ void inicializar_cena(int cena)
     else if(cena == CENA_CUTSCENE1)
     {
         printf("Iniciando cutscene 1\n");
+
+		som_cutscene = al_load_sample("./assets/Sound_effect/somcutscene.wav");
+        if (!som_cutscene)
+        {
+            fprintf(stderr, "Erro ao carregar audio: somcutscene.wav\n");
+            exit(-1);
+        }
+
         cutscene_1_imagem = al_load_bitmap("./assets/cutscene1.png");
         if (!cutscene_1_imagem)
         {
@@ -321,12 +342,15 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
-		cutscene_timer = al_create_timer(1.0 / 1.0); // timer de 1 segundo para a cutscene
+		cutscene_timer = al_create_timer(2.0 / 1.0); // timer de 1.5 segundos para cada quadrante da cutscene
         if (!cutscene_1_imagem)
         {
             fprintf(stderr, "Erro ao criar timer da cutscene!\n");
             exit(-1);
         }
+
+        al_register_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+
 	}
 
     else if(cena == CENA_LEVEL_1)
@@ -367,6 +391,7 @@ void inicializar_cena(int cena)
             fprintf(stderr, "Erro ao carregar fonte inimigo!\n");
             exit(-1);
         }
+
 
     }
     
@@ -434,7 +459,7 @@ void destruir_cena(int cena)
     else if(cena == CENA_COMO_JOGAR)
     {
         printf("Destruindo como jogar\n");
-        al_destroy_font(fonte_instrucoes);
+        al_destroy_font(fonte_gameOver);
 		al_destroy_bitmap(botao_tecla_wasd);
 		al_destroy_bitmap(botao_tecla_space);
     }
@@ -442,8 +467,16 @@ void destruir_cena(int cena)
     else if (cena == CENA_CUTSCENE1)
     {
         printf("Destruindo cutscene 1\n");
+
+        al_destroy_sample(som_cutscene);
         al_destroy_bitmap(cutscene_1_imagem);
-	}
+        if (cutscene_timer)
+        {
+            al_unregister_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+            al_destroy_timer(cutscene_timer);
+            cutscene_timer = NULL;
+        }
+    }
 
     else if (cena == CENA_LEVEL_1)
     {
@@ -478,10 +511,18 @@ void destruir_cena(int cena)
 
 void destruir_jogo()
 {
+    // Globais criadas em inicializar_jogo
+    al_destroy_bitmap(botao_1);
+    al_destroy_bitmap(botao_2);
+    al_destroy_bitmap(personagem_imagem);
+    al_destroy_bitmap(ataque_imagem);
+    al_destroy_bitmap(vida_imagem);
+    al_destroy_sample(botao_som);
+    al_destroy_font(fonte_score);
+
     al_uninstall_audio();
     al_uninstall_keyboard();
     al_uninstall_mouse();
-    al_destroy_font(fonte_score);
     al_destroy_timer(timer);
     al_destroy_event_queue(fila_de_evento);
     al_destroy_display(display);

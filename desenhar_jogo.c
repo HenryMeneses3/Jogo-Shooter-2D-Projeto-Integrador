@@ -3,6 +3,7 @@
 #include "cenas.h"
 #include "objetos.h"
 #include "input.h"
+#include "funcoes_principais.h"
 
 
 void desenhar_objeto_movel(ObjetoMovel objeto)
@@ -60,11 +61,24 @@ void desenhar_jogo()
     
     }
 
-    else if(cena_atual == CENA_CUTSCENE1)
+    else if (cena_atual == CENA_CUTSCENE1)
     {
         
-        
-		al_draw_bitmap_region(cutscene_1_imagem, 0, 0, tamanho_quadrante_cutscene, tamanho_quadrante_cutscene, TELA_W/2 - tamanho_quadrante_cutscene, 100, 0);
+		al_draw_filled_rectangle(0, 0, TELA_W, TELA_H, al_map_rgb(0, 0, 0)); // fundo preto
+
+		for (i = 0; i <= cutscene_quadrante_atual; i++) // desenha quadrantes ja revelados
+        {
+			int dest_x = (i % 2 == 0) ? (TELA_W / 2 - tamanho_quadrante_cutscene) : (TELA_W / 2); // esquerda ou direita
+			int dest_y = (i < 2) ? (TELA_H / 2 - tamanho_quadrante_cutscene) : (TELA_H / 2); // cima ou baixo
+
+            al_draw_tinted_bitmap_region(
+                cutscene_1_imagem,
+                al_map_rgba_f(1, 1, 1, alpha_quadrante[i]),
+                tamanho_quadrante_cutscene * i, 0,
+                tamanho_quadrante_cutscene, tamanho_quadrante_cutscene,
+                dest_x, dest_y, 0
+			); // desenha o quadrante com o alpha atual
+        }
     }
 
     else if (cena_atual == CENA_LEVEL_1)
@@ -102,6 +116,7 @@ void desenhar_jogo()
 
     else if (cena_atual == CENA_GAMEOVER)
     {
+
         al_draw_bitmap(game_over_imagem, 0, 0, 0);
 
         al_draw_text(fonte_score, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_score, "GAMEOVER") / 2, 200, 0, "GAMEOVER");

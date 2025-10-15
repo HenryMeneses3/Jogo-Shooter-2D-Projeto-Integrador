@@ -4,6 +4,7 @@
 #include "recursos.h"
 #include "cenas.h"
 #include "objetos.h"
+#include "funcoes_principais.h"
 
 void atualizar_jogo(void)
 {

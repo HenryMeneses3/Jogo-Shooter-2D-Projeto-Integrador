@@ -22,6 +22,9 @@ extern ALLEGRO_FONT* fonte_gameOver;
 extern ALLEGRO_FONT* fonte_instrucoes;
 extern ALLEGRO_FONT* fonte_titulo;
 
+//cores
+extern ALLEGRO_COLOR cor_fade;
+
 // imagens
 extern ALLEGRO_BITMAP* botao_1;
 extern ALLEGRO_BITMAP* botao_2;
@@ -48,5 +51,7 @@ extern ALLEGRO_SAMPLE* game_over_bgm;
 extern ALLEGRO_SAMPLE_ID game_over_bgm_id;
 extern ALLEGRO_SAMPLE* botao_som;
 extern ALLEGRO_SAMPLE_ID botao_som_id;
+extern ALLEGRO_SAMPLE* som_cutscene;
+extern ALLEGRO_SAMPLE_ID som_cutscene_id;
 
 #endif

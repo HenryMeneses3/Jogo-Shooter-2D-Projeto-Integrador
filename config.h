@@ -2,7 +2,11 @@
 #define CONFIG_H
 
 #include <allegro5/allegro.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
+#define NUM_MAX_QUADRANTES 4
 #define LEVEL_INICIAL 1
 #define MAX_INIMIGOS 6
 #define MAX_TIROS 100
@@ -18,15 +22,16 @@
 extern int i;
 extern int j;
 extern int redraws;
-/*
-extern float cutscene_alpha;
-extern int cutscene_quadrante_atual;
-extern int max_quadrantes_cutscene;
-*/
+
 extern const int FPS;
 extern const int TELA_W;
 extern const int TELA_H;
+
 extern const int tamanho_quadrante_cutscene;
+extern int cutscene_quadrante_atual;
+float alpha_quadrante[NUM_MAX_QUADRANTES];
+
+
 extern const int level1Floor;
 extern const int level2Floor;
 extern const int level2Right;

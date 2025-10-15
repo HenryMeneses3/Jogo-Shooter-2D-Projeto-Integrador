@@ -23,9 +23,7 @@ void mudar_de_cena(int proxima_cena)
 
     cena_atual = proxima_cena;
     inicializar_cena(cena_atual);
-    pontos = 0;
-    personagem.vida = VIDA_INICIAL;
-
+  
 
     if (cena_atual == CENA_GAMEOVER)
     {
@@ -35,6 +33,16 @@ void mudar_de_cena(int proxima_cena)
         }
     }
 
+    if(cena_atual == CENA_CUTSCENE1)
+    {
+		al_start_timer(cutscene_timer);
+        cutscene_quadrante_atual = -1;
+        for (int i = 0; i < NUM_MAX_QUADRANTES; i++) 
+        {
+            alpha_quadrante[i] = 0;
+        }
+	}
+
     else if (cena_atual == CENA_LEVEL_1)
     {
         if (!al_play_sample(level_1_bgm, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &level_1_bgm_id))
@@ -42,6 +50,8 @@ void mudar_de_cena(int proxima_cena)
             perror("falha ao tocar audio: level_1_bgm");
         }
 
+        pontos = 0;
+        personagem.vida = VIDA_INICIAL;
         personagem.escondido = false; // mostra personagem na tela
         personagem.x = TELA_W / 2 - personagem.w / 2; // inicia no centro da tela no eixo x
         personagem.y = (level1Floor + (TELA_H - level1Floor) / 2) - personagem.h / 2; // inicia no centro y do chao do level1
@@ -56,6 +66,7 @@ void mudar_de_cena(int proxima_cena)
 
     else if (CENA_LEVEL_2)
     {
+        personagem.vida = VIDA_INICIAL;
         personagem.escondido = false;
         personagem.x = TELA_W / 2 - personagem.w / 2;
         personagem.y = level2Floor / 2;

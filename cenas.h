@@ -17,7 +17,6 @@ extern int cena_atual_temp;
 extern void mudar_de_cena(int proxima_cena);
 extern void inicializar_cena(int cena);
 extern void destruir_cena(int cena);
-extern void atualizar_cutscene();
 extern void passar_nivel();
 
 #endif

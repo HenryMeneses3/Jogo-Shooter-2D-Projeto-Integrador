@@ -7,6 +7,7 @@
 #include "cenas.h"
 #include "objetos.h"
 #include "input.h"
+#include "funcoes_principais.h"
 
 
 int main()

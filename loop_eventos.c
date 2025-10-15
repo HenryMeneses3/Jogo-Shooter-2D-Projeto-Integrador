@@ -4,6 +4,7 @@
 #include "objetos.h"
 #include "input.h"
 #include "colisoes.h"
+#include "funcoes_principais.h"
 
 void comecar_loop_de_eventos(void)
 {
@@ -26,7 +27,33 @@ void comecar_loop_de_eventos(void)
             if (evento.timer.source == timer)
             {
                 redraws++;
-				personagem.invencibilidade_timer -= 1.0 / FPS;
+
+                if (cena_atual == CENA_CUTSCENE1)
+                {
+					if (cutscene_quadrante_atual >= 0 && alpha_quadrante[cutscene_quadrante_atual] < 1.0) //fade in
+                    {
+						if (alpha_quadrante[cutscene_quadrante_atual] >= 1.0) //garante que n passe de 1.0
+                            alpha_quadrante[cutscene_quadrante_atual] = 1.0;
+
+						alpha_quadrante[cutscene_quadrante_atual] += (1.0 / FPS) * (1.0 / 2.0); // fade in em 2 segundos
+                    }
+                    redraws = 1;
+                }
+            }
+			if (evento.timer.source == cutscene_timer) // timer da cutscene 2 segundos
+            {
+                if (cena_atual == CENA_CUTSCENE1)
+                {
+					cutscene_quadrante_atual++;// avança para o próximo quadrante
+                    al_play_sample(som_cutscene, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &som_cutscene_id);
+
+					if (cutscene_quadrante_atual >= NUM_MAX_QUADRANTES) // se passou do último quadrante, termina a cutscene
+                    {
+                        al_stop_timer(cutscene_timer);
+                        destruir_cena(CENA_CUTSCENE1);
+                        mudar_de_cena(CENA_LEVEL_1);
+                    }
+                }
             }
             break;
 
