@@ -26,6 +26,7 @@ extern ALLEGRO_FONT* fonte_titulo;
 extern ALLEGRO_COLOR cor_fade;
 
 // imagens
+extern ALLEGRO_BITMAP* botao_conclusao;
 extern ALLEGRO_BITMAP* botao_1;
 extern ALLEGRO_BITMAP* botao_2;
 extern ALLEGRO_BITMAP* botao_tecla_wasd;
@@ -33,6 +34,7 @@ extern ALLEGRO_BITMAP* botao_tecla_space;
 extern ALLEGRO_BITMAP* tela_inicial_imagem;
 extern ALLEGRO_BITMAP* cutscene_1_imagem;
 extern ALLEGRO_BITMAP* level_1_imagem;
+extern ALLEGRO_BITMAP* cutscene_2_imagem;
 extern ALLEGRO_BITMAP* level_2_imagem;
 extern ALLEGRO_BITMAP* level_3_imagem;
 extern ALLEGRO_BITMAP* game_over_imagem;

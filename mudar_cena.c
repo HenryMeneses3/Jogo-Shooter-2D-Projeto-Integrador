@@ -21,6 +21,7 @@ void mudar_de_cena(int proxima_cena)
         al_stop_sample(&game_over_bgm_id);
     }
 
+    cena_atual_temp = cena_atual;
     cena_atual = proxima_cena;
     inicializar_cena(cena_atual);
   
@@ -35,8 +36,8 @@ void mudar_de_cena(int proxima_cena)
 
     if(cena_atual == CENA_CUTSCENE1)
     {
-		al_start_timer(cutscene_timer);
         cutscene_quadrante_atual = -1;
+		al_start_timer(cutscene_timer);
         for (int i = 0; i < NUM_MAX_QUADRANTES; i++) 
         {
             alpha_quadrante[i] = 0;
@@ -61,6 +62,16 @@ void mudar_de_cena(int proxima_cena)
         for (i = 0; i < MAX_INIMIGOS; i++)
         {
             resetar_inimigo(&inimigos[i]); //spawna inimigos
+        }
+    }
+
+    else if (cena_atual == CENA_CUTSCENE2)
+    {
+        cutscene_quadrante_atual = -1;
+        al_start_timer(cutscene_timer);
+        for (int i = 0; i < NUM_MAX_QUADRANTES; i++)
+        {
+            alpha_quadrante[i] = 0;
         }
     }
 

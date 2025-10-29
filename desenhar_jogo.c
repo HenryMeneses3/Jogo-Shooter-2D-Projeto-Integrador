@@ -91,8 +91,8 @@ void desenhar_jogo()
 
 
 
-		al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 400, 180, 0, "Alunos, ACERTEM as palavras corretas para ganhar pontos");
-        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 400, 210, 0, "Nota para passar: 150 pontos");
+		al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 180, 0, "Alunos, ACERTEM as equacoes corretas para ganhar pontos");
+        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 210, 0, "Nota para passar: 100 pontos");
         al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 570, 250, 0, "Ass: O Professor");
        
       
@@ -104,14 +104,47 @@ void desenhar_jogo()
 
     }
 
+    else if (cena_atual == CENA_CUTSCENE2)
+    {
+
+        al_draw_filled_rectangle(0, 0, TELA_W, TELA_H, al_map_rgb(0, 0, 0)); // fundo preto
+
+        for (i = 0; i <= cutscene_quadrante_atual; i++) // desenha quadrantes ja revelados
+        {
+            int dest_x = (i % 2 == 0) ? (TELA_W / 2 - tamanho_quadrante_cutscene) : (TELA_W / 2); // esquerda ou direita
+            int dest_y = (i < 2) ? (TELA_H / 2 - tamanho_quadrante_cutscene) : (TELA_H / 2); // cima ou baixo
+
+            al_draw_tinted_bitmap_region(
+                cutscene_2_imagem,
+                al_map_rgba_f(1, 1, 1, alpha_quadrante[i]),
+                tamanho_quadrante_cutscene * i, 0,
+                tamanho_quadrante_cutscene, tamanho_quadrante_cutscene,
+                dest_x, dest_y, 0
+            ); // desenha o quadrante com o alpha atual
+        }
+    }
+
     else if(cena_atual == CENA_LEVEL_2)
     {
         al_draw_bitmap(level_2_imagem, 0, 0, 0);
+
     }
     
     else if (cena_atual == CENA_LEVEL_3)
     {
         al_draw_bitmap(level_3_imagem, 0, 0, 0);
+    }
+
+    else if(cena_atual == CENA_CONCLUSAO)
+    {
+		al_draw_bitmap(botao_conclusao, TELA_W / 2 - al_get_bitmap_width(botao_conclusao) / 2, TELA_H / 2 - al_get_bitmap_height(botao_conclusao) / 2, 0);
+        
+        if(cena_atual_temp == CENA_LEVEL_1)
+        {
+            al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_gameOver, "Conseguiu!") / 2, 200, 0, "Conseguiu!");
+			al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce passou de nivel com %d vida(s)!") / 2 + 10, 280, 0, "Voce passou de nivel com %d vida(s)!", personagem.vida);
+			al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Clique no botao para passar.") / 2 + 10, 320, 0, "Clique no botao para passar.");
+        }
     }
 
     else if (cena_atual == CENA_GAMEOVER)

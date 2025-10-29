@@ -3,13 +3,14 @@
 
 enum {
     CENA_MENU = 1,
-    CENA_CUTSCENE1,
     CENA_COMO_JOGAR,
-    CENA_CONFIG,
+    CENA_CUTSCENE1,
     CENA_LEVEL_1,
+	CENA_CUTSCENE2,
     CENA_LEVEL_2,
     CENA_LEVEL_3,
-    CENA_GAMEOVER
+    CENA_GAMEOVER,
+	CENA_CONCLUSAO
 };
 
 extern int cena_atual;

@@ -28,7 +28,7 @@ void comecar_loop_de_eventos(void)
             {
                 redraws++;
 
-                if (cena_atual == CENA_CUTSCENE1)
+                if (cena_atual == CENA_CUTSCENE1 || cena_atual == CENA_CUTSCENE2)
                 {
 					if (cutscene_quadrante_atual >= 0 && alpha_quadrante[cutscene_quadrante_atual] < 1.0) //fade in
                     {
@@ -42,7 +42,7 @@ void comecar_loop_de_eventos(void)
             }
 			if (evento.timer.source == cutscene_timer) // timer da cutscene 2 segundos
             {
-                if (cena_atual == CENA_CUTSCENE1)
+                if (cena_atual == CENA_CUTSCENE1 || cena_atual == CENA_CUTSCENE2)
                 {
 					cutscene_quadrante_atual++;// avança para o próximo quadrante
                     al_play_sample(som_cutscene, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &som_cutscene_id);
@@ -50,8 +50,8 @@ void comecar_loop_de_eventos(void)
 					if (cutscene_quadrante_atual >= NUM_MAX_QUADRANTES) // se passou do último quadrante, termina a cutscene
                     {
                         al_stop_timer(cutscene_timer);
-                        destruir_cena(CENA_CUTSCENE1);
-                        mudar_de_cena(CENA_LEVEL_1);
+                        destruir_cena(cena_atual);
+                        mudar_de_cena(cena_atual + 1);
                     }
                 }
             }

@@ -142,7 +142,6 @@ void atualizar_personagem(void)
 
     if (personagem.vida <= 0)
     {
-        cena_atual_temp = cena_atual;
         destruir_cena(cena_atual);
         mudar_de_cena(CENA_GAMEOVER);
         printf("GAMEOVER!\n");

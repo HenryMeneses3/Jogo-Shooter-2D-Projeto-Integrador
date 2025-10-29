@@ -49,6 +49,7 @@ ALLEGRO_FONT* fonte_gameOver;
 ALLEGRO_FONT* fonte_instrucoes;
 ALLEGRO_FONT* fonte_titulo;
 
+ALLEGRO_BITMAP* botao_conclusao;
 ALLEGRO_BITMAP* botao_1;
 ALLEGRO_BITMAP* botao_2;
 ALLEGRO_BITMAP* botao_tecla_wasd;   
@@ -56,6 +57,7 @@ ALLEGRO_BITMAP* botao_tecla_space;
 ALLEGRO_BITMAP* tela_inicial_imagem;
 ALLEGRO_BITMAP* cutscene_1_imagem;
 ALLEGRO_BITMAP* level_1_imagem;
+ALLEGRO_BITMAP* cutscene_2_imagem;
 ALLEGRO_BITMAP* level_2_imagem;
 ALLEGRO_BITMAP* level_3_imagem;
 ALLEGRO_BITMAP* game_over_imagem;
@@ -343,7 +345,7 @@ void inicializar_cena(int cena)
         }
 
 		cutscene_timer = al_create_timer(2.0 / 1.0); // timer de 1.5 segundos para cada quadrante da cutscene
-        if (!cutscene_1_imagem)
+        if (!cutscene_timer)
         {
             fprintf(stderr, "Erro ao criar timer da cutscene!\n");
             exit(-1);
@@ -378,7 +380,7 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
-		fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 15, 0);
+		fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 17, 0);
         if(!fonte_instrucoes)
         {
             fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
@@ -393,6 +395,34 @@ void inicializar_cena(int cena)
         }
 
 
+    }
+    
+    else if (cena == CENA_CUTSCENE2)
+    {
+        printf("Iniciando cutscene 2\n");
+
+        cutscene_2_imagem = al_load_bitmap("./assets/cutscene2.png");
+        if (!cutscene_2_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da cutscene 2!\n");
+            exit(-1);
+        }
+
+        som_cutscene = al_load_sample("./assets/Sound_effect/somcutscene.wav");
+        if (!som_cutscene)
+        {
+            fprintf(stderr, "Erro ao carregar audio: somcutscene.wav\n");
+            exit(-1);
+        }
+
+        cutscene_timer = al_create_timer(2.0 / 1.0); // timer de 1.5 segundos para cada quadrante da cutscene
+        if (!cutscene_timer)
+        {
+            fprintf(stderr, "Erro ao criar timer da cutscene!\n");
+            exit(-1);
+        }
+
+        al_register_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
     }
     
     else if(cena == CENA_LEVEL_2)
@@ -418,6 +448,32 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 	}
+    
+    else if(cena_atual == CENA_CONCLUSAO)
+    {
+		botao_conclusao = al_load_bitmap("./assets/conclusao.png");
+        if (!botao_conclusao)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da conclusao!\n");
+            exit(-1);
+        }
+
+
+        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 40, 0);
+        if (!fonte_gameOver)
+        {
+            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
+            exit(-1);
+        }
+
+		fonte_instrucoes = al_load_ttf_font("./assets/fonteGameOver.ttf", 18, 0);
+        if (!fonte_instrucoes)
+        {
+            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
+            exit(-1);
+        }
+
+    }
 
     else if(cena == CENA_GAMEOVER)
     {
@@ -487,6 +543,20 @@ void destruir_cena(int cena)
         al_destroy_font(fonte_inimigo);
         al_destroy_font(fonte_instrucoes);
     }
+    
+    else if (cena == CENA_CUTSCENE2)
+    {
+        printf("Destruindo cutscene 2\n");
+		
+        al_destroy_bitmap(cutscene_2_imagem);
+        al_destroy_sample(som_cutscene);
+        if (cutscene_timer)
+        {
+            al_unregister_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+            al_destroy_timer(cutscene_timer);
+            cutscene_timer = NULL;
+        }
+    }
 
     else if (cena == CENA_LEVEL_2)
     {
@@ -499,6 +569,14 @@ void destruir_cena(int cena)
         printf("Destruindo level 3\n");
         al_destroy_bitmap(level_3_imagem);
     }
+
+    else if (cena == CENA_CONCLUSAO)
+    {
+        printf("Destruindo conclusao\n");
+        al_destroy_bitmap(botao_conclusao);
+        al_destroy_font(fonte_gameOver);
+		al_destroy_font(fonte_instrucoes);
+	}
 
     else if (cena == CENA_GAMEOVER)
     {

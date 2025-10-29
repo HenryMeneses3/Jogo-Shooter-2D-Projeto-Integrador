@@ -72,6 +72,26 @@ void mouse_apertado(int botao, int x, int y)
         }
 	}
 
+    else if (cena_atual == CENA_CONCLUSAO)
+    {
+        if(botao == true)
+        {
+            float largura_botao_continuar = 129.0;
+            float altura_botao_continuar = 86.0;
+            float botao_continuar_x = TELA_W / 2 - al_get_bitmap_width(botao_conclusao) / 2 + 125.0;
+            float botao_continuar_y = TELA_H / 2 - al_get_bitmap_height(botao_conclusao) / 2 + 336.0;
+
+            bool continuar = mouse_em_retangulo(x, y, botao_continuar_x, botao_continuar_y, largura_botao_continuar, altura_botao_continuar);
+            
+            if(continuar)
+            {
+                al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
+                destruir_cena(CENA_CONCLUSAO);
+                mudar_de_cena(cena_atual_temp + 1);
+            }
+        }
+    }
+
 	else if (cena_atual == CENA_GAMEOVER)
     {
         if (botao == true)
