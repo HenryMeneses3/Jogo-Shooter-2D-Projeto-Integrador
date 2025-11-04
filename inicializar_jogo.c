@@ -29,9 +29,13 @@ const int level3Floor = 275;
 
 int pontos = 0;
 
+int fileira_ativa = -1;
+int tamanho_fileira_certa = 110;
+
 ObjetoMovel personagem;
-ObjetoMovel inimigos[MAX_INIMIGOS];
+ObjetoMovel inimigos[MAX_EXPRESSOES];
 ObjetoMovel ataque[MAX_TIROS];
+ObjetoMovel fileiras[MAX_FILEIRAS];
 double ultimo_tiro = 0;
 
 bool estado_tecla[ALLEGRO_KEY_MAX];
@@ -65,6 +69,8 @@ ALLEGRO_BITMAP* game_over_botao;
 
 ALLEGRO_SAMPLE* level_1_bgm;
 ALLEGRO_SAMPLE_ID level_1_bgm_id;
+ALLEGRO_SAMPLE* conclusao_bgm;
+ALLEGRO_SAMPLE_ID conclusao_bgm_id;
 ALLEGRO_SAMPLE* game_over_bgm;
 ALLEGRO_SAMPLE_ID game_over_bgm_id;
 
@@ -73,9 +79,6 @@ ALLEGRO_SAMPLE_ID botao_som_id;
 ALLEGRO_SAMPLE* som_cutscene;
 ALLEGRO_SAMPLE_ID som_cutscene_id;
 
-ALLEGRO_BITMAP* inimigo_1_imagem;
-ALLEGRO_BITMAP* inimigo_2_imagem;
-ALLEGRO_BITMAP* inimigo_3_imagem;
 
 ALLEGRO_BITMAP* personagem_imagem;
 ALLEGRO_BITMAP* vida_imagem;
@@ -303,8 +306,8 @@ void inicializar_cena(int cena)
     {
 		printf("Iniciando como jogar\n");
 
-        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
-        if (!fonte_gameOver)
+        fonte_instrucoes = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
+        if (!fonte_instrucoes)
         {
             fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
             exit(-1);
@@ -387,7 +390,7 @@ void inicializar_cena(int cena)
             exit(-1);
 		}
 
-        fonte_inimigo = al_load_ttf_font("./assets/Fonte_inimigo.ttf", 26, 0);
+        fonte_inimigo = al_load_ttf_font("./assets/fonteInimigo.ttf", 36, 0);
         if (!fonte_inimigo)
         {
             fprintf(stderr, "Erro ao carregar fonte inimigo!\n");
@@ -436,6 +439,69 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
+        fileiras[0].img = al_load_bitmap("./assets/Animais/fileira1.png");
+        if (!fileiras[0].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 1!\n");
+            exit(-1);
+        }
+
+        fileiras[1].img = al_load_bitmap("./assets/Animais/fileira2.png");
+        if (!fileiras[1].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 2!\n");
+            exit(-1);
+        }
+
+        fileiras[2].img = al_load_bitmap("./assets/Animais/fileira3.png");
+        if (!fileiras[2].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 3!\n");
+            exit(-1);
+        }
+
+        fileiras[3].img = al_load_bitmap("./assets/Animais/fileira4.png");
+        if (!fileiras[3].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 4!\n");
+            exit(-1);
+        }
+
+        fileiras[4].img = al_load_bitmap("./assets/Animais/fileira5.png");
+        if (!fileiras[4].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 5!\n");
+            exit(-1);
+        }
+
+        fileiras[5].img = al_load_bitmap("./assets/Animais/fileira6.png");
+        if (!fileiras[5].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 6!\n");
+            exit(-1);
+        }
+
+		fileiras[6].img = al_load_bitmap("./assets/Animais/fileira7.png");
+        if (!fileiras[6].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 7!\n");
+            exit(-1);
+        }
+
+		fileiras[7].img = al_load_bitmap("./assets/Animais/fileira8.png");
+        if (!fileiras[7].img)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da fileira 8!\n");
+            exit(-1);
+		}
+
+        fonte_instrucoes = al_load_ttf_font("./assets/fonteGameOver.ttf", 20, 0);
+        if (!fonte_instrucoes)
+        {
+            fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
+            exit(-1);
+        }
+
     }
 
     else if(cena == CENA_LEVEL_3)
@@ -458,7 +524,6 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
-
         fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 40, 0);
         if (!fonte_gameOver)
         {
@@ -473,11 +538,25 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
+		conclusao_bgm = al_load_sample("./assets/Background_music/conclusao.ogg");
+        if (!conclusao_bgm)
+        {
+            fprintf(stderr, "Erro ao carregar audio: conclusao.ogg\n");
+            exit(-1);
+		}
+
     }
 
     else if(cena == CENA_GAMEOVER)
     {
         printf("Iniciando tela de game over\n");
+
+        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
+        if (!fonte_gameOver)
+        {
+            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
+            exit(-1);
+        }
         game_over_imagem = al_load_bitmap("./assets/GameOver.png");
         if (!game_over_imagem)
         {
@@ -492,12 +571,6 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
-        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
-        if (!fonte_gameOver)
-        {
-            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
-            exit(-1);
-        }
 
     }
 }
@@ -515,7 +588,7 @@ void destruir_cena(int cena)
     else if(cena == CENA_COMO_JOGAR)
     {
         printf("Destruindo como jogar\n");
-        al_destroy_font(fonte_gameOver);
+        al_destroy_font(fonte_instrucoes);
 		al_destroy_bitmap(botao_tecla_wasd);
 		al_destroy_bitmap(botao_tecla_space);
     }
@@ -562,6 +635,11 @@ void destruir_cena(int cena)
     {
         printf("Destruindo level 2\n");
         al_destroy_bitmap(level_2_imagem);
+        for(i = 0; i < MAX_FILEIRAS; i++)
+        {
+            al_destroy_bitmap(fileiras[i].img);
+		}
+		al_destroy_font(fonte_instrucoes);
     }
 
     else if (cena == CENA_LEVEL_3)
@@ -576,6 +654,7 @@ void destruir_cena(int cena)
         al_destroy_bitmap(botao_conclusao);
         al_destroy_font(fonte_gameOver);
 		al_destroy_font(fonte_instrucoes);
+		al_destroy_sample(conclusao_bgm);
 	}
 
     else if (cena == CENA_GAMEOVER)

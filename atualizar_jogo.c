@@ -17,12 +17,16 @@ void atualizar_jogo(void)
     {
         atualizar_inimigo();
         
-        if (pontos >= 10)
+        if (pontos >= MAX_SCORE)
         {
             destruir_cena(cena_atual);
             mudar_de_cena(CENA_CONCLUSAO);
             printf("Fase 2!\n");
         }
+    }
+    if(cena_atual == CENA_LEVEL_2)
+    {
+        atualizar_inimigo();
     }
 
 }

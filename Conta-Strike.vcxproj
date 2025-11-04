@@ -152,6 +152,7 @@
     <ClCompile Include="atualizar_jogo.c" />
     <ClCompile Include="colisoes.c" />
     <ClCompile Include="desenhar_jogo.c" />
+    <ClCompile Include="fileiras.c" />
     <ClCompile Include="inicializar_jogo.c" />
     <ClCompile Include="loop_eventos.c" />
     <ClCompile Include="mudar_cena.c" />

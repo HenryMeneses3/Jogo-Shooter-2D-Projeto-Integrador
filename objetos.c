@@ -1,4 +1,4 @@
-#include <allegro5/allegro.h> 
+ï»¿#include <allegro5/allegro.h> 
 #include <stdio.h>           
 #include <stdlib.h>          
 #include <string.h>          
@@ -14,70 +14,99 @@ bool hitbox_em_um_retangulo(int posXp, int posYp, int pW, int pH, int posXret, i
 
 void resetar_inimigo(ObjetoMovel* inimigo)
 {
-    int direcoes_validas[3] = { BAIXO, ESQUERDA, DIREITA };
-
-    // randomiza direcao toda vez
-    inimigo->direcao = direcoes_validas[rand() % 3];
-
-    // randomiza as expressoes toda vez
-    int index_expressoes = rand() % total_de_expressoes;
-
-    strcpy_s(inimigo->expressao, sizeof(inimigo->expressao), expressoes[index_expressoes].texto);
-    inimigo->inimigo = expressoes[index_expressoes].correta;
-    inimigo->w = al_get_text_width(fonte_inimigo, inimigo->expressao);
-    inimigo->h = al_get_font_line_height(fonte_inimigo);
-    inimigo->vx = VELOCIDADE_INIMIGO + rand() % (int)VELOCIDADE_MAX_INIMIGO;
-    inimigo->vy = VELOCIDADE_INIMIGO + rand() % (int)VELOCIDADE_MAX_INIMIGO;
-
-    if (inimigo->direcao == DIREITA) // vai VIR da direita
+    if (cena_atual == CENA_LEVEL_1)
     {
-        inimigo->x = TELA_W;
-        inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2));
+        int direcoes_validas[3] = { BAIXO, ESQUERDA, DIREITA };
+
+        // randomiza direcao toda vez
+        inimigo->direcao = direcoes_validas[rand() % 3];
+
+        // randomiza as expressoes toda vez
+        int index_expressoes = rand() % total_de_expressoes;
+
+        strcpy_s(inimigo->expressao, sizeof(inimigo->expressao), expressoes[index_expressoes].texto);
+        inimigo->inimigo = expressoes[index_expressoes].correta;
+        inimigo->w = al_get_text_width(fonte_inimigo, inimigo->expressao);
+        inimigo->h = al_get_font_line_height(fonte_inimigo);
+        inimigo->vx = VELOCIDADE_INIMIGO + rand() % (int)VELOCIDADE_MAX_INIMIGO;
+        inimigo->vy = VELOCIDADE_INIMIGO + rand() % (int)VELOCIDADE_MAX_INIMIGO;
+
+        if (inimigo->direcao == DIREITA) // vai VIR da direita
+        {
+            inimigo->x = TELA_W;
+            inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2));
+        }
+        else if (inimigo->direcao == ESQUERDA) // vai VIR da esquerda
+        {
+            inimigo->x = 0 - inimigo->w;
+		    inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2)); // 2*ataque pq quero que ele nasca um pouco acima do chao
+        }
+        else if (inimigo->direcao == BAIXO) // vai VIR de baixo
+        {
+            inimigo->y = TELA_H;
+            inimigo->x = rand() % (TELA_W - (int)inimigo->w);
+        }
     }
-    else if (inimigo->direcao == ESQUERDA) // vai VIR da esquerda
+    else if(cena_atual == CENA_LEVEL_2)
     {
-        inimigo->x = 0 - inimigo->w;
-		inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2)); // 2*ataque pq quero que ele nasca um pouco acima do chao
-    }
-    else if (inimigo->direcao == BAIXO) // vai VIR de baixo
-    {
-        inimigo->y = TELA_H;
-        inimigo->x = rand() % (TELA_W - (int)inimigo->w);
+      
+
+		sortear_fileira();
+        fileiras[fileira_ativa].x = 90;
+        fileiras[fileira_ativa].h = al_get_bitmap_height(fileiras[fileira_ativa].img);
+		fileiras[fileira_ativa].w = al_get_bitmap_width(fileiras[fileira_ativa].img);
+        fileiras[fileira_ativa].y = 0 - fileiras[fileira_ativa].h;
+        fileiras[fileira_ativa].vy = VELOCIDADE_INIMIGO_FILEIRA;
+        fileiras[fileira_ativa].escondido = false;
+        fileiras[fileira_ativa].inimigo = true;
     }
 }
 
 void atualizar_inimigo()
 {
-
-    for (i = 0; i < MAX_INIMIGOS; i++)
+    if(cena_atual == CENA_LEVEL_1)
     {
-        if (inimigos[i].direcao == DIREITA)
+        for (i = 0; i < MAX_EXPRESSOES; i++)
         {
-            inimigos[i].x -= inimigos[i].vx;
-            if (inimigos[i].x < 0 - inimigos[i].w)
+            if (inimigos[i].direcao == DIREITA)
             {
-                resetar_inimigo(&inimigos[i]);
+                inimigos[i].x -= inimigos[i].vx;
+                if (inimigos[i].x < 0 - inimigos[i].w)
+                {
+                    resetar_inimigo(&inimigos[i]);
+                }
             }
-        }
-        else if (inimigos[i].direcao == ESQUERDA)
-        {
+            else if (inimigos[i].direcao == ESQUERDA)
+            {
 
-            inimigos[i].x += inimigos[i].vx;
-            if (inimigos[i].x > TELA_W + inimigos[i].w)
-            {
-                resetar_inimigo(&inimigos[i]);
+                inimigos[i].x += inimigos[i].vx;
+                if (inimigos[i].x > TELA_W + inimigos[i].w)
+                {
+                    resetar_inimigo(&inimigos[i]);
+                }
             }
-        }
-        else if (inimigos[i].direcao == BAIXO)
-        {
-            inimigos[i].y -= inimigos[i].vy;
-            if (inimigos[i].y < -2 * inimigos[i].h)
+            else if (inimigos[i].direcao == BAIXO)
             {
-                resetar_inimigo(&inimigos[i]);
+                inimigos[i].y -= inimigos[i].vy;
+                if (inimigos[i].y < -2 * inimigos[i].h)
+                {
+                    resetar_inimigo(&inimigos[i]);
+                }
             }
-        }
 		
+        }
     }
+
+    else if(cena_atual == CENA_LEVEL_2)
+    {
+		fileiras[fileira_ativa].y += fileiras[fileira_ativa].vy;
+		if (fileiras[fileira_ativa].y > TELA_H + fileiras[fileira_ativa].h)
+        {
+			resetar_inimigo(&fileiras[fileira_ativa]);
+        }
+      
+    }
+
 }
 
 void atualizar_personagem(void)
@@ -129,7 +158,7 @@ void atualizar_personagem(void)
     }
     else
     {
-        if (personagem.direcao == DIREITA) // gambiarra pq o sprite sheet do movimento pra direita começa com um sprite andando
+        if (personagem.direcao == DIREITA) // gambiarra pq o sprite sheet do movimento pra direita comeÃ§a com um sprite andando
         {
             personagem.frame = 1;
         }
@@ -137,21 +166,28 @@ void atualizar_personagem(void)
         {
             personagem.frame = 0; // se parado frame inicial
         }
-        personagem.anim_contador = 0; // se parado contador volta ao zero, evita dele começar num sprite errado dps de ficar parado
+        personagem.anim_contador = 0; // se parado contador volta ao zero, evita dele comeÃ§ar num sprite errado dps de ficar parado
     }
 
-    if (personagem.vida <= 0)
+    if(cena_atual == CENA_LEVEL_1 || cena_atual == CENA_LEVEL_2 || cena_atual == CENA_LEVEL_3)
     {
-        destruir_cena(cena_atual);
-        mudar_de_cena(CENA_GAMEOVER);
-        printf("GAMEOVER!\n");
+        if (personagem.vida <= 0)
+        {
+            destruir_cena(cena_atual);
+            mudar_de_cena(CENA_GAMEOVER);
+            printf("GAMEOVER!\n");
+        }
     }
+
 	// checa se personagem ta saindo da tela
     checar_colisao_personagem(&personagem);
-    for(i = 0; i < MAX_INIMIGOS; i++)
+    
+    for(i = 0; i < MAX_EXPRESSOES; i++)
     {
         checar_colisao_personagem_inimigo(&personagem, &inimigos[i]);
 	}
+
+    checar_colisao_personagem_inimigo(&personagem, &fileiras[fileira_ativa]);
 }
 
 void atualizar_tiro()
@@ -187,7 +223,7 @@ void atualizar_tiro()
                 }
 
                 ultimo_tiro = agora; // tempo do ultimo tiro pra usar no cooldown
-                break; // só cria 1 tiro
+                break; // sÃ³ cria 1 tiro
             }
         }
     }
@@ -196,7 +232,7 @@ void atualizar_tiro()
     {
         if (ataque[i].escondido) // se ataque nao foi "disparado" ta escondido na tela
             continue; // ignora
-        switch (ataque[i].direcao) // se nao, com base na direção
+        switch (ataque[i].direcao) // se nao, com base na direÃ§Ã£o
         {
         case DIREITA:
             ataque[i].x += ataque[i].vx;

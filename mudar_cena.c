@@ -20,6 +20,10 @@ void mudar_de_cena(int proxima_cena)
     {
         al_stop_sample(&game_over_bgm_id);
     }
+    else if(cena_atual == CENA_CONCLUSAO)
+    {
+		al_stop_sample(&conclusao_bgm_id);
+    }
 
     cena_atual_temp = cena_atual;
     cena_atual = proxima_cena;
@@ -33,6 +37,13 @@ void mudar_de_cena(int proxima_cena)
             perror("falha ao tocar audio: game_over_bgm");
         }
     }
+    else if (cena_atual == CENA_CONCLUSAO)
+    {
+        if (!al_play_sample(conclusao_bgm, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &conclusao_bgm_id))
+        {
+            perror("falha ao tocar audio: conclusao_bgm");
+        }
+	}
 
     if(cena_atual == CENA_CUTSCENE1)
     {
@@ -59,7 +70,7 @@ void mudar_de_cena(int proxima_cena)
         personagem.direcao = BAIXO;// inicia olhando pra baixo
         personagem.frame = 0;  // inicia no frame 0
 
-        for (i = 0; i < MAX_INIMIGOS; i++)
+        for (i = 0; i < MAX_EXPRESSOES; i++)
         {
             resetar_inimigo(&inimigos[i]); //spawna inimigos
         }
@@ -75,14 +86,34 @@ void mudar_de_cena(int proxima_cena)
         }
     }
 
-    else if (CENA_LEVEL_2)
+    else if (cena_atual == CENA_LEVEL_2)
     {
+		pontos = 0;
         personagem.vida = VIDA_INICIAL;
         personagem.escondido = false;
         personagem.x = TELA_W / 2 - personagem.w / 2;
         personagem.y = level2Floor / 2;
         personagem.direcao = CIMA;
         personagem.frame = 0;
+        embaralhar_fileiras();
+		resetar_inimigo(&fileiras[fileira_ativa]);
+        
+    }
+
+    else if (cena_atual == CENA_LEVEL_3)
+    {
+        pontos = 0;
+        personagem.vida = VIDA_INICIAL;
+        personagem.escondido = false;
+        personagem.x = TELA_W / 2 - personagem.w / 2;
+        personagem.y = TELA_H / 2 - personagem.h / 2;
+        personagem.direcao = DIREITA;
+		personagem.frame = 0;
+    }
+
+    else if(cena_atual == CENA_CONCLUSAO)
+    {
+		personagem.vida = personagem.vida; // mantém a vida do personagem
     }
 }
 

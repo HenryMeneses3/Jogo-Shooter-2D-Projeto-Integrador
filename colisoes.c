@@ -1,4 +1,4 @@
-#include <stdbool.h>
+﻿#include <stdbool.h>
 #include <allegro5/allegro.h> 
 #include "config.h"
 #include "recursos.h"
@@ -180,7 +180,7 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
     // COLISAO INIMIGO COM PERSONAGEM NO LEVEL 1
     if (cena_atual == CENA_LEVEL_1)
     {
-        for (i = 0; i < MAX_INIMIGOS; i++)
+        for (i = 0; i < MAX_EXPRESSOES; i++)
         {
             if (inimigos[i].escondido)
                 continue;
@@ -198,7 +198,7 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
         {
             if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
                 continue;//ignora
-            for (j = 0; j < MAX_INIMIGOS; j++)
+            for (j = 0; j < MAX_EXPRESSOES; j++)
             {
                 if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, inimigos[j].x, inimigos[j].y, inimigos[j].h, inimigos[j].w))
                 {
@@ -209,7 +209,7 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
                     }
                     else
                     {
-                        printf("Palavra errada, -1 Vida!\n");
+                        printf("Expressao errada, -1 Vida!\n");
                         personagem->vida--;
                     }
                     resetar_inimigo(&inimigos[j]);
@@ -218,5 +218,37 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
             }
         }
         
+    }
+    if(cena_atual == CENA_LEVEL_2)
+    {
+        if(fileiras[fileira_ativa].escondido == false)
+        {
+            if (hitbox_em_um_retangulo(personagem->x + 12, personagem->y + 13, personagem->w - 12, personagem->h - 13, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, fileiras[fileira_ativa].h, fileiras[fileira_ativa].w)) // deixei menos 12 pra tentar ficar com um hitbox menor
+            {
+                    printf("Cuidado, -1 Vida!\n");
+					personagem->vida--;
+                
+                resetar_inimigo(&fileiras[fileira_ativa]);
+            }
+		}
+
+        for (i = 0; i < MAX_TIROS; i++)
+        {
+            if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
+                continue;//ignora
+            if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, fileiras[fileira_ativa].x + infofileiras[fileira_ativa].posXcerto * tamanho_fileira_certa, fileiras[fileira_ativa].y, tamanho_fileira_certa, tamanho_fileira_certa))
+            {
+                resetar_inimigo(&fileiras[fileira_ativa]);
+                ataque[i].escondido = true;
+                pontos += 1;
+            }
+            else if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, fileiras[fileira_ativa].h, fileiras[fileira_ativa].w))
+            {
+                printf("Errou o animal, -1 Vida!\n");
+                personagem->vida--;
+                resetar_inimigo(&fileiras[fileira_ativa]);
+                ataque[i].escondido = true;
+            }
+        }
     }
 }

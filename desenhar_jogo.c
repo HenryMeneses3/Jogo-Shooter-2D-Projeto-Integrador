@@ -1,4 +1,4 @@
-#include "config.h"
+Ôªø#include "config.h"
 #include "recursos.h"
 #include "cenas.h"
 #include "objetos.h"
@@ -11,7 +11,7 @@ void desenhar_objeto_movel(ObjetoMovel objeto)
     if (objeto.escondido)
         return;
 
-    if (objeto.sprite_sheet) // gambiarra pq o personagem principal È de uma spritesheet
+    if (objeto.sprite_sheet) // gambiarra pq o personagem principal √© de uma spritesheet
     {
         al_draw_bitmap_region(objeto.img, objeto.frame * objeto.w, objeto.direcao * objeto.h, objeto.w, objeto.h, objeto.x, objeto.y, 0);
     }
@@ -24,20 +24,20 @@ void desenhar_objeto_movel(ObjetoMovel objeto)
 void desenhar_jogo()
 {
 
-    if(cena_atual == CENA_MENU)
+    if (cena_atual == CENA_MENU)
     {
         al_draw_bitmap(tela_inicial_imagem, 0, 0, 0);
-		al_draw_text(fonte_titulo, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_titulo, "Conta-Strike") / 2 + 20, 20, 0, "Conta-Strike");
+        al_draw_text(fonte_titulo, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_titulo, "Conta-Strike") / 2 + 20, 20, 0, "Conta-Strike");
 
-		al_draw_bitmap(botao_2, TELA_W / 2 - al_get_bitmap_width(botao_2) - 200 / 2, 600, 0);
+        al_draw_bitmap(botao_2, TELA_W / 2 - al_get_bitmap_width(botao_2) - 200 / 2, 600, 0);
 
         al_draw_bitmap(botao_2, TELA_W / 2 + 200 / 2, 600, 0);
 
-		al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_bitmap_width(botao_2) - 200 / 2 + (al_get_bitmap_width(botao_2) / 2) - (al_get_text_width(fonte_gameOver, "Iniciar") / 2), 600 + (al_get_bitmap_height(botao_2) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Iniciar");
-		al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 + 200 / 2 + (al_get_bitmap_width(botao_2) / 2) - (al_get_text_width(fonte_gameOver, "Como Jogar") / 2), 600 + (al_get_bitmap_height(botao_2) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Como Jogar");
-	}
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_bitmap_width(botao_2) - 200 / 2 + (al_get_bitmap_width(botao_2) / 2) - (al_get_text_width(fonte_gameOver, "Iniciar") / 2), 600 + (al_get_bitmap_height(botao_2) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Iniciar");
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 + 200 / 2 + (al_get_bitmap_width(botao_2) / 2) - (al_get_text_width(fonte_gameOver, "Como Jogar") / 2), 600 + (al_get_bitmap_height(botao_2) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Como Jogar");
+    }
 
-    else if(cena_atual == CENA_COMO_JOGAR)
+    else if (cena_atual == CENA_COMO_JOGAR)
     {
         float largura_janela = 300.0;
         float altura_janela = 175.0;
@@ -45,31 +45,31 @@ void desenhar_jogo()
         float botao_fechar_y = TELA_H / 2 - altura_janela + 10;
         float botao_fechar_tam = 30.0;
 
-        // A ìjanelaî central
-        al_draw_filled_rounded_rectangle(TELA_W / 2 - largura_janela, TELA_H / 2 - altura_janela, TELA_W/2 + largura_janela, TELA_H / 2 + altura_janela, 20, 20, al_map_rgb(240, 240, 240));
+        // A ‚Äújanela‚Äù central
+        al_draw_filled_rounded_rectangle(TELA_W / 2 - largura_janela, TELA_H / 2 - altura_janela, TELA_W / 2 + largura_janela, TELA_H / 2 + altura_janela, 20, 20, al_map_rgb(240, 240, 240));
 
-        // Bot„o fechar (cÌrculo com X)
+        // Bot√£o fechar (c√≠rculo com X)
         al_draw_filled_circle(botao_fechar_x + botao_fechar_tam / 2, botao_fechar_y + botao_fechar_tam / 2, botao_fechar_tam / 2, al_map_rgb(220, 60, 60));
         al_draw_line(botao_fechar_x + 8, botao_fechar_y + 8, botao_fechar_x + botao_fechar_tam - 8, botao_fechar_y + botao_fechar_tam - 8, al_map_rgb(255, 255, 255), 3);
         al_draw_line(botao_fechar_x + botao_fechar_tam - 8, botao_fechar_y + 8, botao_fechar_x + 8, botao_fechar_y + botao_fechar_tam - 8, al_map_rgb(255, 255, 255), 3);
 
-		al_draw_bitmap(botao_tecla_wasd, TELA_W / 2 - largura_janela + 20, TELA_H / 2 - altura_janela + 20, 0);
-        al_draw_text(fonte_gameOver, al_map_rgb(0, 0, 0), TELA_W / 2 - largura_janela + al_get_bitmap_width(botao_tecla_wasd) / 2 - al_get_text_width(fonte_gameOver, "PARA ANDAR") / 2 + 20, TELA_H / 2 - altura_janela + al_get_bitmap_height(botao_tecla_wasd) - 20, 0, "PARA ANDAR");
+        al_draw_bitmap(botao_tecla_wasd, TELA_W / 2 - largura_janela + 20, TELA_H / 2 - altura_janela + 20, 0);
+        al_draw_text(fonte_instrucoes, al_map_rgb(0, 0, 0), TELA_W / 2 - largura_janela + al_get_bitmap_width(botao_tecla_wasd) / 2 - al_get_text_width(fonte_instrucoes, "PARA ANDAR") / 2 + 20, TELA_H / 2 - altura_janela + al_get_bitmap_height(botao_tecla_wasd) - 20, 0, "PARA ANDAR");
 
-        al_draw_bitmap(botao_tecla_space, TELA_W / 2  + 20, TELA_H / 2 - altura_janela + 20, 0);
-        al_draw_text(fonte_gameOver, al_map_rgb(0, 0, 0), TELA_W / 2 + al_get_bitmap_width(botao_tecla_space) / 2 - al_get_text_width(fonte_gameOver, "PARA ATIRAR") / 2 + 20, TELA_H / 2 - altura_janela + al_get_bitmap_height(botao_tecla_space) - 20, 0, "PARA ATIRAR");
-    
+        al_draw_bitmap(botao_tecla_space, TELA_W / 2 + 20, TELA_H / 2 - altura_janela + 20, 0);
+        al_draw_text(fonte_instrucoes, al_map_rgb(0, 0, 0), TELA_W / 2 + al_get_bitmap_width(botao_tecla_space) / 2 - al_get_text_width(fonte_instrucoes, "PARA ATIRAR") / 2 + 20, TELA_H / 2 - altura_janela + al_get_bitmap_height(botao_tecla_space) - 20, 0, "PARA ATIRAR");
+
     }
 
     else if (cena_atual == CENA_CUTSCENE1)
     {
-        
-		al_draw_filled_rectangle(0, 0, TELA_W, TELA_H, al_map_rgb(0, 0, 0)); // fundo preto
 
-		for (i = 0; i <= cutscene_quadrante_atual; i++) // desenha quadrantes ja revelados
+        al_draw_filled_rectangle(0, 0, TELA_W, TELA_H, al_map_rgb(0, 0, 0)); // fundo preto
+
+        for (i = 0; i <= cutscene_quadrante_atual; i++) // desenha quadrantes ja revelados
         {
-			int dest_x = (i % 2 == 0) ? (TELA_W / 2 - tamanho_quadrante_cutscene) : (TELA_W / 2); // esquerda ou direita
-			int dest_y = (i < 2) ? (TELA_H / 2 - tamanho_quadrante_cutscene) : (TELA_H / 2); // cima ou baixo
+            int dest_x = (i % 2 == 0) ? (TELA_W / 2 - tamanho_quadrante_cutscene) : (TELA_W / 2); // esquerda ou direita
+            int dest_y = (i < 2) ? (TELA_H / 2 - tamanho_quadrante_cutscene) : (TELA_H / 2); // cima ou baixo
 
             al_draw_tinted_bitmap_region(
                 cutscene_1_imagem,
@@ -77,7 +77,7 @@ void desenhar_jogo()
                 tamanho_quadrante_cutscene * i, 0,
                 tamanho_quadrante_cutscene, tamanho_quadrante_cutscene,
                 dest_x, dest_y, 0
-			); // desenha o quadrante com o alpha atual
+            ); // desenha o quadrante com o alpha atual
         }
     }
 
@@ -91,13 +91,13 @@ void desenhar_jogo()
 
 
 
-		al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 180, 0, "Alunos, ACERTEM as equacoes corretas para ganhar pontos");
+        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 180, 0, "Alunos, ACERTEM as equacoes corretas para ganhar pontos");
         al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 210, 0, "Nota para passar: 100 pontos");
         al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 570, 250, 0, "Ass: O Professor");
-       
-      
 
-        for (i = 0; i < MAX_INIMIGOS; i++)
+
+
+        for (i = 0; i < MAX_EXPRESSOES; i++)
         {
             al_draw_text(fonte_inimigo, al_map_rgb(244, 240, 236), inimigos[i].x, inimigos[i].y, 0, inimigos[i].expressao);
         }
@@ -124,26 +124,43 @@ void desenhar_jogo()
         }
     }
 
-    else if(cena_atual == CENA_LEVEL_2)
+    else if (cena_atual == CENA_LEVEL_2)
     {
-        al_draw_bitmap(level_2_imagem, 0, 0, 0);
+       al_draw_bitmap(level_2_imagem, 0, 0, 0);
 
+       al_draw_bitmap(fileiras[fileira_ativa].img, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, 0);
+
+       char texto[100]; // cria um buffer de texto
+       snprintf(texto, sizeof(texto), "Acerte o animal - %s: %s",
+           infofileiras[fileira_ativa].Tipo,
+           infofileiras[fileira_ativa].termo);
+
+
+	   al_draw_text(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, texto) / 2, 300, 0, texto);
+       
     }
-    
+
     else if (cena_atual == CENA_LEVEL_3)
     {
         al_draw_bitmap(level_3_imagem, 0, 0, 0);
     }
 
-    else if(cena_atual == CENA_CONCLUSAO)
+    else if (cena_atual == CENA_CONCLUSAO)
     {
-		al_draw_bitmap(botao_conclusao, TELA_W / 2 - al_get_bitmap_width(botao_conclusao) / 2, TELA_H / 2 - al_get_bitmap_height(botao_conclusao) / 2, 0);
-        
-        if(cena_atual_temp == CENA_LEVEL_1)
+        al_draw_bitmap(botao_conclusao, TELA_W / 2 - al_get_bitmap_width(botao_conclusao) / 2, TELA_H / 2 - al_get_bitmap_height(botao_conclusao) / 2, 0);
+
+        if (cena_atual_temp == CENA_LEVEL_1)
         {
             al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_gameOver, "Conseguiu!") / 2, 200, 0, "Conseguiu!");
-			al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce passou de nivel com %d vida(s)!") / 2 + 10, 280, 0, "Voce passou de nivel com %d vida(s)!", personagem.vida);
-			al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Clique no botao para passar.") / 2 + 10, 320, 0, "Clique no botao para passar.");
+            al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce passou de nivel com %d vida(s)!") / 2 + 10, 280, 0, "Voce passou de nivel com %d vida(s)!", personagem.vida);
+            al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Clique no botao para passar.") / 2 + 10, 320, 0, "Clique no botao para passar.");
+        }
+        else if (cena_atual_temp == CENA_LEVEL_2)
+        {
+            al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_gameOver, "Conseguiu!") / 2, 200, 0, "Conseguiu!");
+            al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce passou de nivel com %d vida(s)!") / 2 + 10, 280, 0, "Voce passou de nivel com %d vida(s)!", personagem.vida);
+            al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce acertou %d/8 corretamente!") / 2 + 10, 320, 0, "Voce acertou % d / 8 corretamente!", pontos);
+            al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Clique no botao para passar.") / 2 + 10, 360, 0, "Clique no botao para passar.");
         }
     }
 
@@ -159,13 +176,13 @@ void desenhar_jogo()
         al_draw_bitmap(botao_1, (TELA_W / 2 - al_get_bitmap_width(botao_1)) - 20, 400, 0);
         al_draw_bitmap(botao_1, TELA_W / 2 + 40, 400, 0);
 
-        al_draw_text(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 + al_get_bitmap_width(botao_1) / 2 - (al_get_text_width(fonte_gameOver, "No") / 2) + 40, 400 + (al_get_bitmap_height(botao_1) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "No");
-        al_draw_text(fonte_gameOver, al_map_rgb(255, 255, 255), (TELA_W / 2 - al_get_bitmap_width(botao_1) / 2) - (al_get_text_width(fonte_gameOver, "Yes") / 2) - 23, 400 + (al_get_bitmap_height(botao_1) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Yes");
+        al_draw_text(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 + al_get_bitmap_width(botao_1) / 2 - (al_get_text_width(fonte_gameOver, "Nao") / 2) + 40, 400 + (al_get_bitmap_height(botao_1) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Nao");
+        al_draw_text(fonte_gameOver, al_map_rgb(255, 255, 255), (TELA_W / 2 - al_get_bitmap_width(botao_1) / 2) - (al_get_text_width(fonte_gameOver, "Sim") / 2) - 23, 400 + (al_get_bitmap_height(botao_1) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Sim");
     }
 
     if (cena_atual == CENA_LEVEL_1 || cena_atual == CENA_LEVEL_2 || cena_atual == CENA_LEVEL_3)
     {
-		desenhar_objeto_movel(personagem);
+        desenhar_objeto_movel(personagem);
 
         for (i = 0; i < MAX_TIROS; i++)
         {
