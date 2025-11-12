@@ -30,12 +30,15 @@ const int level3Floor = 275;
 int pontos = 0;
 
 int fileira_ativa = -1;
+int pergunta_ativa = 0;
 int tamanho_fileira_certa = 110;
+
 
 ObjetoMovel personagem;
 ObjetoMovel inimigos[MAX_EXPRESSOES];
 ObjetoMovel ataque[MAX_TIROS];
 ObjetoMovel fileiras[MAX_FILEIRAS];
+
 double ultimo_tiro = 0;
 
 bool estado_tecla[ALLEGRO_KEY_MAX];
@@ -63,9 +66,15 @@ ALLEGRO_BITMAP* cutscene_1_imagem;
 ALLEGRO_BITMAP* level_1_imagem;
 ALLEGRO_BITMAP* cutscene_2_imagem;
 ALLEGRO_BITMAP* level_2_imagem;
+ALLEGRO_BITMAP* cutscene_3_imagem;
 ALLEGRO_BITMAP* level_3_imagem;
+ALLEGRO_BITMAP* cutscene_4_imagem;
 ALLEGRO_BITMAP* game_over_imagem;
 ALLEGRO_BITMAP* game_over_botao;
+ALLEGRO_BITMAP* explicacao_imagem_1;
+ALLEGRO_BITMAP* explicacao_imagem_2;
+ALLEGRO_BITMAP* explicacao_imagem_3;
+ALLEGRO_BITMAP* final_imagem;
 
 ALLEGRO_SAMPLE* level_1_bgm;
 ALLEGRO_SAMPLE_ID level_1_bgm_id;
@@ -196,7 +205,7 @@ void inicializar_allegro5(void)
 
 void inicializar_jogo()
 {
-    printf("Iniciando jogo! =D\n");
+    printf("Iniciando jogo! =D\n\n");
 
     botao_1 = al_load_bitmap("./assets/botao.png");
     if (!botao_1)
@@ -278,7 +287,7 @@ void inicializar_cena(int cena)
 {
     if(cena == CENA_MENU)
     {
-		printf("Iniciando menu\n");
+		printf("Iniciando menu\n\n");
 
         tela_inicial_imagem = al_load_bitmap("./assets/telaInicial.png");
         if (!tela_inicial_imagem)
@@ -304,7 +313,7 @@ void inicializar_cena(int cena)
     
     else if(cena == CENA_COMO_JOGAR)
     {
-		printf("Iniciando como jogar\n");
+		printf("Iniciando como jogar\n\n");
 
         fonte_instrucoes = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
         if (!fonte_instrucoes)
@@ -331,7 +340,7 @@ void inicializar_cena(int cena)
 
     else if(cena == CENA_CUTSCENE1)
     {
-        printf("Iniciando cutscene 1\n");
+        printf("Iniciando cutscene 1\n\n");
 
 		som_cutscene = al_load_sample("./assets/Sound_effect/somcutscene.wav");
         if (!som_cutscene)
@@ -358,9 +367,21 @@ void inicializar_cena(int cena)
 
 	}
 
+    else if (cena == CENA_EXPLICACAO_1)
+    {
+     
+		explicacao_imagem_1 = al_load_bitmap("./assets/explicacao1.png");
+        if (!explicacao_imagem_1)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da explicacao 1!\n");
+            exit(-1);
+        }
+
+    }
+
     else if(cena == CENA_LEVEL_1)
     {
-        printf("Iniciando level 1\n");
+        printf("Iniciando level 1\n\n");
 
         level_1_bgm = al_load_sample("./assets/Background_music/level_1_background.ogg");
         if (!level_1_bgm)
@@ -369,21 +390,21 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
-        level_1_imagem = al_load_bitmap("./assets/level1background.png"); // chao de y = 375 ate 720
+        level_1_imagem = al_load_bitmap("./assets/backgroundlevel1.png"); // chao de y = 375 ate 720
         if (!level_1_imagem)
         {
             fprintf(stderr, "Erro ao carregar imagem do primeiro mapa!\n");
             exit(-1);
         }
 
-        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
+        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 25, 0);
         if (!fonte_gameOver)
         {
             fprintf(stderr, "Erro ao carregar fonte gameover!\n");
             exit(-1);
         }
 
-		fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 17, 0);
+		fonte_instrucoes = al_load_ttf_font("./assets/fonteInstrucoes.ttf", 20, 0);
         if(!fonte_instrucoes)
         {
             fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
@@ -402,7 +423,7 @@ void inicializar_cena(int cena)
     
     else if (cena == CENA_CUTSCENE2)
     {
-        printf("Iniciando cutscene 2\n");
+        printf("Iniciando cutscene 2\n\n");
 
         cutscene_2_imagem = al_load_bitmap("./assets/cutscene2.png");
         if (!cutscene_2_imagem)
@@ -427,10 +448,20 @@ void inicializar_cena(int cena)
 
         al_register_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
     }
+
+    else if (cena == CENA_EXPLICACAO_2)
+    {
+        explicacao_imagem_2 = al_load_bitmap("./assets/explicacao2.png");
+        if (!explicacao_imagem_2)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da explicacao 2!\n");
+            exit(-1);
+		}
+    }
     
     else if(cena == CENA_LEVEL_2)
     {
-        printf("Iniciando level 2\n");
+        printf("Iniciando level 2\n\n");
 
         level_2_imagem = al_load_bitmap("./assets/level2background.png");
         if (!level_2_imagem)
@@ -504,16 +535,119 @@ void inicializar_cena(int cena)
 
     }
 
+    else if(cena == CENA_CUTSCENE3)
+    {
+        printf("Iniciando cutscene 3\n\n");
+
+        cutscene_3_imagem = al_load_bitmap("./assets/cutscene3.png");
+        if (!cutscene_3_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da cutscene 3!\n");
+            exit(-1);
+        }
+
+        som_cutscene = al_load_sample("./assets/Sound_effect/somcutscene.wav");
+        if (!som_cutscene)
+        {
+            fprintf(stderr, "Erro ao carregar audio: somcutscene.wav\n");
+            exit(-1);
+        }
+
+        cutscene_timer = al_create_timer(2.0 / 1.0); // timer de 1.5 segundos para cada quadrante da cutscene
+        if (!cutscene_timer)
+        {
+            fprintf(stderr, "Erro ao criar timer da cutscene!\n");
+            exit(-1);
+        }
+
+        al_register_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+    }
+
+    else if (cena == CENA_EXPLICACAO_3)
+    {
+        explicacao_imagem_3 = al_load_bitmap("./assets/explicacao3.png");
+        if (!explicacao_imagem_3)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da explicacao 3!\n");
+            exit(-1);
+        }
+    }
+
     else if(cena == CENA_LEVEL_3)
     {
-        printf("Iniciando level 3\n");
+        printf("Iniciando level 3\n\n");
         level_3_imagem = al_load_bitmap("./assets/level3background.png");
         if (!level_3_imagem)
         {
             fprintf(stderr, "Erro ao carregar imagem do terceiro mapa!\n");
             exit(-1);
         }
+		fonte_instrucoes = al_load_ttf_font("./assets/fonteGameOver.ttf", 45, 0);
+        if (!fonte_instrucoes)
+        {
+            fprintf(stderr, "Erro ao carregar fonte das instrucoes!\n");
+            exit(-1);
+		}
+        fonte_score = al_load_ttf_font("./assets/fonteGameOver.ttf", 35, 0);
+        if (!fonte_score)
+        {
+            fprintf(stderr, "Erro ao carregar fonte das instrucoes 2!\n");
+            exit(-1);
+        }
+		fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 25, 0);
+        if (!fonte_gameOver)
+        {
+            fprintf(stderr, "Erro ao carregar fonte das alternativas!\n");
+            exit(-1);
+        }
 	}
+
+    else if (cena == CENA_CUTSCENE4)
+    {
+        printf("Iniciando cutscene 4\n\n");
+        cutscene_4_imagem = al_load_bitmap("./assets/cutscene4.png");
+        if (!cutscene_4_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da cutscene 4!\n");
+            exit(-1);
+        }
+        som_cutscene = al_load_sample("./assets/Sound_effect/somcutscene.wav");
+        if (!som_cutscene)
+        {
+            fprintf(stderr, "Erro ao carregar audio: somcutscene.wav\n");
+            exit(-1);
+        }
+        cutscene_timer = al_create_timer(2.0 / 1.0); // timer de 1.5 segundos para cada quadrante da cutscene
+        if (!cutscene_timer)
+        {
+            fprintf(stderr, "Erro ao criar timer da cutscene!\n");
+            exit(-1);
+        }
+
+        al_register_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+	}
+
+    else if(cena_atual == CENA_FIM_JOGO)
+    {
+        final_imagem = al_load_bitmap("./assets/telaFinal.png");
+        if (!final_imagem)
+        {
+            fprintf(stderr, "Erro ao carregar imagem do final!\n");
+            exit(-1);
+		}
+        fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
+        if (!fonte_gameOver)
+        {
+            fprintf(stderr, "Erro ao carregar fonte gameover!\n");
+            exit(-1);
+        }
+        fonte_titulo = al_load_ttf_font("./assets/fonteTitulo.ttf", 80, 0);
+        if (!fonte_titulo)
+        {
+            fprintf(stderr, "Erro ao carregar fonte do titulo!\n");
+            exit(-1);
+        }
+    }
     
     else if(cena_atual == CENA_CONCLUSAO)
     {
@@ -549,7 +683,7 @@ void inicializar_cena(int cena)
 
     else if(cena == CENA_GAMEOVER)
     {
-        printf("Iniciando tela de game over\n");
+        printf("Iniciando tela de game over\n\n");
 
         fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
         if (!fonte_gameOver)
@@ -571,7 +705,6 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
-
     }
 }
 
@@ -579,7 +712,7 @@ void destruir_cena(int cena)
 {
     if (cena == CENA_MENU)
     {
-        printf("Destruindo menu\n");
+        printf("Destruindo menu\n\n");
         al_destroy_bitmap(tela_inicial_imagem);
         al_destroy_font(fonte_gameOver);
         al_destroy_font(fonte_titulo);
@@ -587,7 +720,7 @@ void destruir_cena(int cena)
 
     else if(cena == CENA_COMO_JOGAR)
     {
-        printf("Destruindo como jogar\n");
+        printf("Destruindo como jogar\n\n");
         al_destroy_font(fonte_instrucoes);
 		al_destroy_bitmap(botao_tecla_wasd);
 		al_destroy_bitmap(botao_tecla_space);
@@ -595,7 +728,7 @@ void destruir_cena(int cena)
 
     else if (cena == CENA_CUTSCENE1)
     {
-        printf("Destruindo cutscene 1\n");
+        printf("Destruindo cutscene 1\n\n");
 
         al_destroy_sample(som_cutscene);
         al_destroy_bitmap(cutscene_1_imagem);
@@ -607,9 +740,15 @@ void destruir_cena(int cena)
         }
     }
 
+    else if (cena == CENA_EXPLICACAO_1)
+    {
+        printf("Destruindo tutorial\n\n");
+        al_destroy_bitmap(explicacao_imagem_1);
+	}
+
     else if (cena == CENA_LEVEL_1)
     {
-        printf("Destruindo level 1\n");
+        printf("Destruindo level 1\n\n");
         al_destroy_bitmap(level_1_imagem);
         al_destroy_sample(level_1_bgm);
         al_destroy_font(fonte_gameOver);
@@ -619,7 +758,7 @@ void destruir_cena(int cena)
     
     else if (cena == CENA_CUTSCENE2)
     {
-        printf("Destruindo cutscene 2\n");
+        printf("Destruindo cutscene 2\n\n");
 		
         al_destroy_bitmap(cutscene_2_imagem);
         al_destroy_sample(som_cutscene);
@@ -631,9 +770,15 @@ void destruir_cena(int cena)
         }
     }
 
+    else if (cena == CENA_EXPLICACAO_2)
+    {
+        printf("Destruindo tutorial\n\n");
+        al_destroy_bitmap(explicacao_imagem_2);
+    }
+
     else if (cena == CENA_LEVEL_2)
     {
-        printf("Destruindo level 2\n");
+        printf("Destruindo level 2\n\n");
         al_destroy_bitmap(level_2_imagem);
         for(i = 0; i < MAX_FILEIRAS; i++)
         {
@@ -642,15 +787,49 @@ void destruir_cena(int cena)
 		al_destroy_font(fonte_instrucoes);
     }
 
+    else if(cena == CENA_CUTSCENE3)
+    {
+        printf("Destruindo cutscene 3\n\n");
+
+        al_destroy_sample(som_cutscene);
+        al_destroy_bitmap(cutscene_3_imagem);
+        if (cutscene_timer)
+        {
+            al_unregister_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+            al_destroy_timer(cutscene_timer);
+            cutscene_timer = NULL;
+        }
+    }
+
+    else if (cena == CENA_EXPLICACAO_3)
+    {
+        printf("Destruindo tutorial\n\n");
+        al_destroy_bitmap(explicacao_imagem_3);
+    }
+
     else if (cena == CENA_LEVEL_3)
     {
-        printf("Destruindo level 3\n");
+        printf("Destruindo level 3\n\n");
         al_destroy_bitmap(level_3_imagem);
+      
     }
+
+    else if (cena== CENA_CUTSCENE4)
+    {
+        printf("Destruindo cutscene 4\n\n");
+        al_destroy_sample(som_cutscene);
+        al_destroy_bitmap(cutscene_4_imagem);
+        if (cutscene_timer)
+        {
+            al_unregister_event_source(fila_de_evento, al_get_timer_event_source(cutscene_timer));
+            al_destroy_timer(cutscene_timer);
+            cutscene_timer = NULL;
+        }
+	}
 
     else if (cena == CENA_CONCLUSAO)
     {
-        printf("Destruindo conclusao\n");
+        printf("Destruindo conclusao\n\n");
         al_destroy_bitmap(botao_conclusao);
         al_destroy_font(fonte_gameOver);
 		al_destroy_font(fonte_instrucoes);
@@ -659,7 +838,7 @@ void destruir_cena(int cena)
 
     else if (cena == CENA_GAMEOVER)
     {
-        printf("Destruindo game over\n");
+        printf("Destruindo game over\n\n");
         al_destroy_bitmap(game_over_imagem);
         al_destroy_sample(game_over_bgm);
         al_destroy_font(fonte_gameOver);

@@ -1,4 +1,4 @@
-﻿#include <allegro5/allegro.h> 
+﻿#include <allegro5/allegro.h>
 #include <stdio.h>           
 #include <stdlib.h>          
 #include <string.h>          
@@ -17,6 +17,8 @@ void resetar_inimigo(ObjetoMovel* inimigo)
     if (cena_atual == CENA_LEVEL_1)
     {
         int direcoes_validas[3] = { BAIXO, ESQUERDA, DIREITA };
+
+        inimigo->escondido = false;
 
         // randomiza direcao toda vez
         inimigo->direcao = direcoes_validas[rand() % 3];
@@ -39,7 +41,7 @@ void resetar_inimigo(ObjetoMovel* inimigo)
         else if (inimigo->direcao == ESQUERDA) // vai VIR da esquerda
         {
             inimigo->x = 0 - inimigo->w;
-		    inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2)); // 2*ataque pq quero que ele nasca um pouco acima do chao
+            inimigo->y = level1Floor + (int)inimigo->h + (rand() % (TELA_H - level1Floor - (int)inimigo->h - (int)personagem.h / 2)); // 2*ataque pq quero que ele nasca um pouco acima do chao
         }
         else if (inimigo->direcao == BAIXO) // vai VIR de baixo
         {
@@ -47,14 +49,14 @@ void resetar_inimigo(ObjetoMovel* inimigo)
             inimigo->x = rand() % (TELA_W - (int)inimigo->w);
         }
     }
-    else if(cena_atual == CENA_LEVEL_2)
+    else if (cena_atual == CENA_LEVEL_2)
     {
-      
 
-		sortear_fileira();
+
+        sortear_fileira();
         fileiras[fileira_ativa].x = 90;
         fileiras[fileira_ativa].h = al_get_bitmap_height(fileiras[fileira_ativa].img);
-		fileiras[fileira_ativa].w = al_get_bitmap_width(fileiras[fileira_ativa].img);
+        fileiras[fileira_ativa].w = al_get_bitmap_width(fileiras[fileira_ativa].img);
         fileiras[fileira_ativa].y = 0 - fileiras[fileira_ativa].h;
         fileiras[fileira_ativa].vy = VELOCIDADE_INIMIGO_FILEIRA;
         fileiras[fileira_ativa].escondido = false;
@@ -64,7 +66,7 @@ void resetar_inimigo(ObjetoMovel* inimigo)
 
 void atualizar_inimigo()
 {
-    if(cena_atual == CENA_LEVEL_1)
+    if (cena_atual == CENA_LEVEL_1)
     {
         for (i = 0; i < MAX_EXPRESSOES; i++)
         {
@@ -93,18 +95,43 @@ void atualizar_inimigo()
                     resetar_inimigo(&inimigos[i]);
                 }
             }
-		
+
+        }
+        for (i = 0; i < MAX_TIROS; i++)
+        {
+            if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
+                continue;//ignora
+            for (j = 0; j < MAX_EXPRESSOES; j++)
+            {
+                if (inimigos[j].escondido)
+                    continue;
+                if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, inimigos[j].x, inimigos[j].y, inimigos[j].h, inimigos[j].w))
+                {
+                    if (inimigos[j].inimigo)//se a expressao for um inimigo
+                    {
+                        printf("Boa, +10 Pontos!\n\n");
+                        pontos += 10;
+                    }
+                    else
+                    {
+                        printf("Expressao errada, -1 Vida!\n\n");
+                        personagem.vida--;
+                    }
+                    resetar_inimigo(&inimigos[j]);
+                    ataque[i].escondido = true;
+                }
+            }
         }
     }
 
-    else if(cena_atual == CENA_LEVEL_2)
+    else if (cena_atual == CENA_LEVEL_2)
     {
-		fileiras[fileira_ativa].y += fileiras[fileira_ativa].vy;
-		if (fileiras[fileira_ativa].y > TELA_H + fileiras[fileira_ativa].h)
+        fileiras[fileira_ativa].y += fileiras[fileira_ativa].vy;
+        if (fileiras[fileira_ativa].y > TELA_H + fileiras[fileira_ativa].h)
         {
-			resetar_inimigo(&fileiras[fileira_ativa]);
+            resetar_inimigo(&fileiras[fileira_ativa]);
         }
-      
+
     }
 
 }
@@ -169,25 +196,32 @@ void atualizar_personagem(void)
         personagem.anim_contador = 0; // se parado contador volta ao zero, evita dele começar num sprite errado dps de ficar parado
     }
 
-    if(cena_atual == CENA_LEVEL_1 || cena_atual == CENA_LEVEL_2 || cena_atual == CENA_LEVEL_3)
+    if (cena_atual == CENA_LEVEL_1 || cena_atual == CENA_LEVEL_2 || cena_atual == CENA_LEVEL_3)
     {
         if (personagem.vida <= 0)
         {
             destruir_cena(cena_atual);
             mudar_de_cena(CENA_GAMEOVER);
-            printf("GAMEOVER!\n");
+            printf("GAMEOVER!\n\n");
         }
     }
 
-	// checa se personagem ta saindo da tela
+    // checa se personagem ta saindo da tela
     checar_colisao_personagem(&personagem);
-    
-    for(i = 0; i < MAX_EXPRESSOES; i++)
+
+
+    for (i = 0; i < MAX_EXPRESSOES; i++)
     {
         checar_colisao_personagem_inimigo(&personagem, &inimigos[i]);
-	}
+    }
 
     checar_colisao_personagem_inimigo(&personagem, &fileiras[fileira_ativa]);
+
+    if(cena_atual == CENA_LEVEL_3)
+    {
+        checar_colisao_personagem_pressure_plate(&personagem);
+    }
+
 }
 
 void atualizar_tiro()

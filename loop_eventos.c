@@ -6,10 +6,11 @@
 #include "colisoes.h"
 #include "funcoes_principais.h"
 
+bool acabou = false;
+
 void comecar_loop_de_eventos(void)
 {
     ALLEGRO_EVENT evento;
-    bool acabou = false;
 
     int redraws = 0;
 
@@ -28,7 +29,7 @@ void comecar_loop_de_eventos(void)
             {
                 redraws++;
 
-                if (cena_atual == CENA_CUTSCENE1 || cena_atual == CENA_CUTSCENE2)
+                if (cena_atual == CENA_CUTSCENE1 || cena_atual == CENA_CUTSCENE2 || cena_atual == CENA_CUTSCENE3 || cena_atual == CENA_CUTSCENE4)
                 {
 					if (cutscene_quadrante_atual >= 0 && alpha_quadrante[cutscene_quadrante_atual] < 1.0) //fade in
                     {
@@ -42,7 +43,7 @@ void comecar_loop_de_eventos(void)
             }
 			if (evento.timer.source == cutscene_timer) // timer da cutscene 2 segundos
             {
-                if (cena_atual == CENA_CUTSCENE1 || cena_atual == CENA_CUTSCENE2)
+                if (cena_atual == CENA_CUTSCENE1 || cena_atual == CENA_CUTSCENE2 || cena_atual == CENA_CUTSCENE3 || cena_atual == CENA_CUTSCENE4)
                 {
 					cutscene_quadrante_atual++;// avança para o próximo quadrante
                     al_play_sample(som_cutscene, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &som_cutscene_id);

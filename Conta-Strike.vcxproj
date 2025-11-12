@@ -159,6 +159,7 @@
     <ClCompile Include="objetos.c" />
     <ClCompile Include="expressoes.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="perguntas.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

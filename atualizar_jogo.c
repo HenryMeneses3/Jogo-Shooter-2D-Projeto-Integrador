@@ -21,12 +21,19 @@ void atualizar_jogo(void)
         {
             destruir_cena(cena_atual);
             mudar_de_cena(CENA_CONCLUSAO);
-            printf("Fase 2!\n");
         }
     }
-    if(cena_atual == CENA_LEVEL_2)
+    else if(cena_atual == CENA_LEVEL_2)
     {
         atualizar_inimigo();
     }
+    else if(cena_atual == CENA_LEVEL_3)
+    {
+        if(pergunta_ativa >= MAX_PERGUNTAS && personagem.vida > 0)
+        {
+            destruir_cena(cena_atual);
+			mudar_de_cena(CENA_CONCLUSAO);
+        }
+	}
 
 }

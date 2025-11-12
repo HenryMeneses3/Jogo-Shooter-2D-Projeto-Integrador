@@ -20,15 +20,15 @@ void mudar_de_cena(int proxima_cena)
     {
         al_stop_sample(&game_over_bgm_id);
     }
-    else if(cena_atual == CENA_CONCLUSAO)
+    else if (cena_atual == CENA_CONCLUSAO)
     {
-		al_stop_sample(&conclusao_bgm_id);
+        al_stop_sample(&conclusao_bgm_id);
     }
 
     cena_atual_temp = cena_atual;
     cena_atual = proxima_cena;
     inicializar_cena(cena_atual);
-  
+
 
     if (cena_atual == CENA_GAMEOVER)
     {
@@ -43,17 +43,17 @@ void mudar_de_cena(int proxima_cena)
         {
             perror("falha ao tocar audio: conclusao_bgm");
         }
-	}
+    }
 
-    if(cena_atual == CENA_CUTSCENE1)
+    if (cena_atual == CENA_CUTSCENE1)
     {
         cutscene_quadrante_atual = -1;
-		al_start_timer(cutscene_timer);
-        for (int i = 0; i < NUM_MAX_QUADRANTES; i++) 
+        al_start_timer(cutscene_timer);
+        for (int i = 0; i < NUM_MAX_QUADRANTES; i++)
         {
             alpha_quadrante[i] = 0;
         }
-	}
+    }
 
     else if (cena_atual == CENA_LEVEL_1)
     {
@@ -88,7 +88,8 @@ void mudar_de_cena(int proxima_cena)
 
     else if (cena_atual == CENA_LEVEL_2)
     {
-		pontos = 0;
+        printf("Fase 2!\n\n");
+        pontos = 0;
         personagem.vida = VIDA_INICIAL;
         personagem.escondido = false;
         personagem.x = TELA_W / 2 - personagem.w / 2;
@@ -96,24 +97,46 @@ void mudar_de_cena(int proxima_cena)
         personagem.direcao = CIMA;
         personagem.frame = 0;
         embaralhar_fileiras();
-		resetar_inimigo(&fileiras[fileira_ativa]);
-        
+        resetar_inimigo(&fileiras[fileira_ativa]);
+
+    }
+
+    else if(cena_atual == CENA_CUTSCENE3)
+    {
+        cutscene_quadrante_atual = -1;
+        al_start_timer(cutscene_timer);
+        for (int i = 0; i < NUM_MAX_QUADRANTES; i++)
+        {
+            alpha_quadrante[i] = 0;
+        }
     }
 
     else if (cena_atual == CENA_LEVEL_3)
     {
+        printf("Fase 3!\n\n");
         pontos = 0;
+		pergunta_ativa = 0;
         personagem.vida = VIDA_INICIAL;
         personagem.escondido = false;
         personagem.x = TELA_W / 2 - personagem.w / 2;
         personagem.y = TELA_H / 2 - personagem.h / 2;
         personagem.direcao = DIREITA;
-		personagem.frame = 0;
+        personagem.frame = 0;
     }
 
-    else if(cena_atual == CENA_CONCLUSAO)
+    else if (cena_atual == CENA_CUTSCENE4)
     {
-		personagem.vida = personagem.vida; // mantém a vida do personagem
+        cutscene_quadrante_atual = -1;
+        al_start_timer(cutscene_timer);
+        for (int i = 0; i < NUM_MAX_QUADRANTES; i++)
+        {
+            alpha_quadrante[i] = 0;
+        }
+    }
+
+    else if (cena_atual == CENA_CONCLUSAO)
+    {
+        personagem.vida = personagem.vida; // mantém a vida do personagem
     }
 }
 

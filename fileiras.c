@@ -9,14 +9,14 @@ int ordem_fileiras[MAX_FILEIRAS];
 
 Fileira infofileiras[] =
 {
-    { "Reptilia", "Classe", 1},
-    { "Aves", "Classe", 5},
-    { "Amphibia", "Familia", 6},
-    { "Felidae", "Familia", 2},
-    { "Equidae", "Familia", 3},
-    { "Herpestidae", "Familia", 0},
-    { "Squamata", "Ordem", 4},
-    { "Artiodactyla", "Ordem", 9}
+    { "Reptilia", "Classe", 1, "Corpo coberto por escamas de queratina"},
+    { "Aves", "Classe", 5, "Corpo coberto por penas"},
+    { "Amphibia", "Familia", 6, "Pele fina, umida e permeavel"},
+    { "Felidae", "Familia", 2, "Possuem garras retrateis"},
+    { "Equidae", "Familia", 3, "Um unico dedo em cada pata com casco"},
+    { "Herpestidae", "Familia", 0, "Corpo alongado e patas curtas, resiste ao veneno"},
+    { "Squamata", "Ordem", 4, "Escamas queratinizadas que se renovam periodicamente"},
+    { "Artiodactyla", "Ordem", 9, "Numero par de dedos nas patas"}
 };
 
 int total_de_fileiras = sizeof(infofileiras) / sizeof(Fileira);
@@ -46,8 +46,9 @@ void sortear_fileira(void)
         fileira_ativa = ordem_fileiras[indice_ordem_atual];
         indice_ordem_atual++;
     }
-    else
+    else if (indice_ordem_atual >= total_de_fileiras && personagem.vida > 0)
     {
+		destruir_cena(CENA_LEVEL_2);
 		mudar_de_cena(CENA_CONCLUSAO);
     }
 }

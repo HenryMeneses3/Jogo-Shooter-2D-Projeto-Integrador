@@ -28,6 +28,37 @@ bool mouse_em_circulo(int mX, int mY, int circX, int circY, int raio)
     return (dx * dx + dy * dy) <= (raio * raio);
 }
 
+void colisao_retangulo(ObjetoMovel* personagem, int xinicial, int yinicial, int largura, int altura)
+{
+    // Limite esquerdo
+    if (personagem->x + personagem->w > xinicial && personagem->x < xinicial &&
+        personagem->y + personagem->h - 10 >= yinicial && personagem->y + 10 <= yinicial + altura)
+    {
+        personagem->x = xinicial - personagem->w;
+    }
+
+    // Limite direito
+    if (personagem->x < xinicial + largura && personagem->x + personagem->w > xinicial + largura &&
+        personagem->y + personagem->h - 10 >= yinicial && personagem->y + 10 <= yinicial + altura)
+    {
+        personagem->x = xinicial + largura;
+    }
+
+    // Limite superior
+    if (personagem->y + personagem->h > yinicial && personagem->y < yinicial &&
+        personagem->x + personagem->w - 10 >= xinicial && personagem->x + 10 <= xinicial + largura)
+    {
+        personagem->y = yinicial - personagem->h;
+    }
+
+    // Limite inferior
+    if (personagem->y < yinicial + altura && personagem->y + personagem->h > yinicial + altura &&
+        personagem->x + personagem->w - 10 >= xinicial && personagem->x + 10 <= xinicial + largura)
+    {
+        personagem->y = yinicial + altura;
+    }
+}
+
 void mouse_apertado(int botao, int x, int y)
 {
 
@@ -37,7 +68,7 @@ void mouse_apertado(int botao, int x, int y)
         {
             bool iniciar = mouse_em_retangulo(x, y, TELA_W / 2 - al_get_bitmap_width(botao_2) - 200 / 2, 600, al_get_bitmap_width(botao_2), al_get_bitmap_height(botao_2));
             bool como_jogar = mouse_em_retangulo(x, y, TELA_W / 2 + 200 / 2, 600, al_get_bitmap_width(botao_2), al_get_bitmap_height(botao_2));
-            
+
             if (iniciar)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
@@ -47,13 +78,13 @@ void mouse_apertado(int botao, int x, int y)
             else if (como_jogar)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
-				destruir_cena(CENA_MENU);
-				mudar_de_cena(CENA_COMO_JOGAR);
+                destruir_cena(CENA_MENU);
+                mudar_de_cena(CENA_COMO_JOGAR);
             }
         }
     }
 
-    else if(cena_atual == CENA_COMO_JOGAR)
+    else if (cena_atual == CENA_COMO_JOGAR)
     {
         if (botao == true)
         {
@@ -70,11 +101,11 @@ void mouse_apertado(int botao, int x, int y)
                 mudar_de_cena(CENA_MENU);
             }
         }
-	}
+    }
 
     else if (cena_atual == CENA_CONCLUSAO)
     {
-        if(botao == true)
+        if (botao == true)
         {
             float largura_botao_continuar = 129.0;
             float altura_botao_continuar = 86.0;
@@ -82,8 +113,8 @@ void mouse_apertado(int botao, int x, int y)
             float botao_continuar_y = TELA_H / 2 - al_get_bitmap_height(botao_conclusao) / 2 + 336.0;
 
             bool continuar = mouse_em_retangulo(x, y, botao_continuar_x, botao_continuar_y, largura_botao_continuar, altura_botao_continuar);
-            
-            if(continuar)
+
+            if (continuar)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
                 destruir_cena(CENA_CONCLUSAO);
@@ -92,13 +123,45 @@ void mouse_apertado(int botao, int x, int y)
         }
     }
 
-	else if (cena_atual == CENA_GAMEOVER)
+    else if (cena_atual == CENA_EXPLICACAO_1 || cena_atual == CENA_EXPLICACAO_2 || cena_atual == CENA_EXPLICACAO_3)
+    {
+        if(botao == true)
+        {
+            bool continuar = mouse_em_retangulo(x, y, 581, 472, 125, 82);
+
+            if(continuar)
+            {
+                al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
+                destruir_cena(cena_atual);
+                mudar_de_cena(cena_atual + 1);
+            }
+		}
+    }
+
+    else if(cena_atual == CENA_FIM_JOGO)
+    {
+        if (botao == true)
+        {
+            bool voltar = mouse_em_retangulo(x, y, TELA_W / 2 - al_get_bitmap_width(botao_2) / 2, 650, al_get_bitmap_width(botao_2), al_get_bitmap_height(botao_2));
+            if (voltar)
+            {
+                al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
+                destruir_cena(CENA_FIM_JOGO);
+                mudar_de_cena(CENA_MENU);
+                printf("Voltando ao menu\n\n");
+            }
+        }
+	}
+
+
+
+    else if (cena_atual == CENA_GAMEOVER)
     {
         if (botao == true)
         {
             bool sim = mouse_em_retangulo(x, y, TELA_W / 2 - al_get_bitmap_width(botao_1) - 20, 400, al_get_bitmap_width(botao_1), al_get_bitmap_height(botao_1));
             bool nao = mouse_em_retangulo(x, y, TELA_W / 2 + 40, 400, al_get_bitmap_width(botao_1), al_get_bitmap_height(botao_1));
-            
+
             if (sim)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
@@ -110,30 +173,31 @@ void mouse_apertado(int botao, int x, int y)
             {
                 al_play_sample(botao_som, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &botao_som_id);
                 destruir_cena(CENA_GAMEOVER);
-                mudar_de_cena(CENA_MENU);
-                printf("Voltando ao menu\n");
+				mudar_de_cena(CENA_MENU);
+                printf("Voltando ao menu\n\n");
             }
 
         }
     }
 }
 
-void checar_colisao_personagem(ObjetoMovel *personagem)
+
+void checar_colisao_personagem(ObjetoMovel* personagem)
 {
 
     if (cena_atual == CENA_LEVEL_1)
     {
         // PERSONAGEM PRESO NA TELA LEVEL 1
         if (personagem->x < 0)
-            personagem->x = 0; 
-        
-        else if (personagem->x > TELA_W - personagem->w) 
+            personagem->x = 0;
+
+        else if (personagem->x > TELA_W - personagem->w)
             personagem->x = TELA_W - personagem->w;
-        
-        
-        if (personagem->y - personagem->h / 2 < level1Floor - personagem->h / 2) 
-            personagem->y = level1Floor; 
-       
+
+
+        if (personagem->y - personagem->h / 2 < level1Floor - personagem->h / 2)
+            personagem->y = level1Floor;
+
         else if (personagem->y > TELA_H - personagem->h)
             personagem->y = TELA_H - personagem->h;
     }
@@ -143,11 +207,11 @@ void checar_colisao_personagem(ObjetoMovel *personagem)
         // PERSONAGEM PRESO NA TELA LEVEL 2
         if (personagem->x < level2Left)
             personagem->x = level2Left;
-        
+
         else if (personagem->x > level2Right - personagem->w)
             personagem->x = level2Right - personagem->w;
-        
-        
+
+
         if (personagem->y + personagem->h > level2Floor)
             personagem->y = level2Floor - personagem->h;
 
@@ -156,27 +220,108 @@ void checar_colisao_personagem(ObjetoMovel *personagem)
 
     }
 
-    else if(cena_atual == CENA_LEVEL_3)
+    else if (cena_atual == CENA_LEVEL_3)
     {
         // PERSONAGEM PRESO NA TELA LEVEL 3
-        if (personagem->x < 0) 
-            personagem->x = 0; 
-       
+        if (personagem->x < 0)
+            personagem->x = 0;
+
         else if (personagem->x > TELA_W - personagem->w)
             personagem->x = TELA_W - personagem->w;
-       
-  
-        if (personagem->y < level3Floor - personagem->h / 2) 
+
+
+        if (personagem->y < level3Floor - personagem->h / 2)
             personagem->y = level3Floor - personagem->h / 2;
 
         else if (personagem->y > TELA_H - personagem->h)
-                personagem->y = TELA_H - personagem->h;
+            personagem->y = TELA_H - personagem->h;
+
+        int largura_tela = 120;
+		int altura_tela = 30;
+        
+
+        // Tela 1
+        colisao_retangulo(personagem, 90, 400, largura_tela, altura_tela);
+
+        // Tela 2
+        colisao_retangulo(personagem, 365, 275, largura_tela, altura_tela);
+
+        // Tela 3
+        colisao_retangulo(personagem, TELA_W - largura_tela - 365, 275, largura_tela, altura_tela);
+
+        // Tela 4
+        colisao_retangulo(personagem, TELA_W - largura_tela - 90, 400, largura_tela, altura_tela);
+        
+
+    }
+}
+
+void resetar_personagem_nivel_3(ObjetoMovel* personagem)
+{
+    personagem->x = TELA_W / 2 - personagem->w / 2;
+    personagem->y = TELA_H / 2 - personagem->h / 2;
+    personagem->direcao = DIREITA;
+    personagem->frame = 0;
+}
+
+void checar_colisao_personagem_pressure_plate(ObjetoMovel* personagem)
+{
+    int largura_pressure_plate = 65;
+    int altura_pressure_plate = 45;
+
+    //PRESSURE PLATE 1
+    if (hitbox_em_um_retangulo(personagem->x, personagem->y + personagem->h, personagem->w, 0.1, 117, 515, largura_pressure_plate, altura_pressure_plate))
+    {
+        if (perguntas[pergunta_ativa].indice_correta == 0)
+            pontos++;
+       
+        else
+            personagem->vida--;
+
+        resetar_personagem_nivel_3(personagem);
+        pergunta_ativa++;
+    }
+    //PRESURE PLATE 2
+    if (hitbox_em_um_retangulo(personagem->x, personagem->y + personagem->h, personagem->w, 0.1, 390, 390, largura_pressure_plate, altura_pressure_plate))
+    {
+        if (perguntas[pergunta_ativa].indice_correta == 1)
+            pontos++;
+
+        else
+            personagem->vida--;
+
+        resetar_personagem_nivel_3(personagem);
+        pergunta_ativa++;
+    }
+
+    if(hitbox_em_um_retangulo(personagem->x, personagem->y + personagem->h, personagem->w, 0.1, TELA_W - 390 - largura_pressure_plate, 390 , largura_pressure_plate, altura_pressure_plate))
+    {
+        if (perguntas[pergunta_ativa].indice_correta == 2)
+            pontos++;
+
+        else
+            personagem->vida--;
+
+            resetar_personagem_nivel_3(personagem);
+            pergunta_ativa++;
+    }
+
+    if (hitbox_em_um_retangulo(personagem->x, personagem->y + personagem->h, personagem->w, 0.1, TELA_W - 117 - largura_pressure_plate, 515, largura_pressure_plate, altura_pressure_plate))
+    {
+        if (perguntas[pergunta_ativa].indice_correta == 3)
+            pontos++;
+
+        else
+            personagem->vida--;
+
+        resetar_personagem_nivel_3(personagem);
+        pergunta_ativa++;
     }
 }
 
 void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* inimigos)
 {
-    
+
     // COLISAO INIMIGO COM PERSONAGEM NO LEVEL 1
     if (cena_atual == CENA_LEVEL_1)
     {
@@ -186,51 +331,26 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
                 continue;
             if (hitbox_em_um_retangulo(personagem->x + 12, personagem->y + 13, personagem->w - 12, personagem->h - 13, inimigos[i].x, inimigos[i].y, inimigos[i].h, inimigos[i].w)) // deixei menos 12 pra tentar ficar com um hitbox menor
             {
-                    printf("Cuidado, -1 Vida!\n");
-                    personagem->vida--;
-                
+                printf("Cuidado, -1 Vida!\n\n");
+                personagem->vida--;
+
                 resetar_inimigo(&inimigos[i]);
             }
         }
-
-        // COLISAO INIMIGO COM ATAQUE NO LEVEL 1
-        for (i = 0; i < MAX_TIROS; i++)
-        {
-            if (ataque[i].escondido) //se o ataque nao ta na tela ou nao foi disparado
-                continue;//ignora
-            for (j = 0; j < MAX_EXPRESSOES; j++)
-            {
-                if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, inimigos[j].x, inimigos[j].y, inimigos[j].h, inimigos[j].w))
-                {
-                    if (inimigos[j].inimigo)//se a expressao for um inimigo
-                    {
-                        printf("Boa, +10 Pontos!\n");
-                        pontos += 10;
-                    }
-                    else
-                    {
-                        printf("Expressao errada, -1 Vida!\n");
-                        personagem->vida--;
-                    }
-                    resetar_inimigo(&inimigos[j]);
-                    ataque[i].escondido = true;
-                }
-            }
-        }
-        
+       
     }
-    if(cena_atual == CENA_LEVEL_2)
+    else if (cena_atual == CENA_LEVEL_2)
     {
-        if(fileiras[fileira_ativa].escondido == false)
+        if (fileiras[fileira_ativa].escondido == false)
         {
             if (hitbox_em_um_retangulo(personagem->x + 12, personagem->y + 13, personagem->w - 12, personagem->h - 13, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, fileiras[fileira_ativa].h, fileiras[fileira_ativa].w)) // deixei menos 12 pra tentar ficar com um hitbox menor
             {
-                    printf("Cuidado, -1 Vida!\n");
-					personagem->vida--;
-                
+                printf("Cuidado, -1 Vida!\n\n");
+                personagem->vida--;
+
                 resetar_inimigo(&fileiras[fileira_ativa]);
             }
-		}
+        }
 
         for (i = 0; i < MAX_TIROS; i++)
         {
@@ -241,10 +361,11 @@ void checar_colisao_personagem_inimigo(ObjetoMovel* personagem, ObjetoMovel* ini
                 resetar_inimigo(&fileiras[fileira_ativa]);
                 ataque[i].escondido = true;
                 pontos += 1;
+                printf("Animal corretamente identificado!\n\n");
             }
             else if (hitbox_em_um_retangulo(ataque[i].x - ataque[i].w / 2, ataque[i].y - ataque[i].h / 2, ataque[i].w, ataque[i].h, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, fileiras[fileira_ativa].h, fileiras[fileira_ativa].w))
             {
-                printf("Errou o animal, -1 Vida!\n");
+                printf("Errou o animal, -1 Vida!\n\n");
                 personagem->vida--;
                 resetar_inimigo(&fileiras[fileira_ativa]);
                 ataque[i].escondido = true;

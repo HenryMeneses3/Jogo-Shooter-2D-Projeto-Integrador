@@ -3,46 +3,38 @@
 Expressao expressoes[] =
 {
     //Trigonometria
-    {"sen(30)=0.5", true},
-    {"cos(60)=0.5", true},
+    {"sen(30)=1/2", true},
+    {"sen(45)=0", false},
+    {"cos(60)=1/2", true},
+    {"sen(45)=1/2", false},
     {"tan(45)=1", true},
-    {"sen(90)=0", false},
+    {"cos(30)=1/2", false},
     {"cos(0)=1", true},
-    {"sen²+cos² = 1", true},
+    {"tan(60)=1", false},
+    {"sen²+cos²=1", true},
+    {"sen(60)=1/2", false},
     {"tan=sen/cos", true},
-    {"cot=1/tan", true},
+    {"cos(45)=1", false},
+    {"cos(45)=√2/2", true},
+    {"sen²−cos²=1", false},
+    {"tan(60)=√3", true},
+    {"tan=cos/sen", false},
+    {"sen(45)=√3/2", false},
 
-    //Versões parecidas e erradas
-   {"sen(45)=0.5", false},
-   {"cos(30)=0.5", false},
-   {"tan(60)=1", false},
-   {"sen(90)=1/2", false},
-   {"cos(90)=1", false},
-   {"sen²−cos² = 1", false},
-   {"tan=cos/sen", false},
-   {"cot=tan", false},
-
-    //Física enxuta
+	//Física
     {"F=mxa", true},
-    {"v=Δs/Δt", true},
-    {"E=mxc²", true},
-    {"Q=mxcxΔT", true},
-
-    //Versões erradas parecidas
     {"F=axm", false},
+    {"v=Δs/Δt", true},
     {"v=Δt/Δs", false},
+    {"E=mxc²", true},
     {"E=mxc", false},
+    {"Q=mxcxΔT", true},
     {"Q=m+cxΔT", false},
 
-    //Logaritmo
-    {"log₁₀(100)=2", true},
-    {"ln(e)=1", true},
-    {"ln(e²)=2", true},
-
-    //Versões erradas parecidas
-    {"log₁₀(100)=1", false},
-    {"ln(1)=1", false},
-    {"ln(e²)=1", false}
+    {"log(100)=2", true},
+    {"Δ=b²-4ac", true},
+    {"log(100)=1", false},
+    {"Δ=a²-bc", false}
 };
 
 

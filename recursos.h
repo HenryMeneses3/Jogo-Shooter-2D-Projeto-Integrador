@@ -38,8 +38,14 @@ extern ALLEGRO_BITMAP* cutscene_1_imagem;
 extern ALLEGRO_BITMAP* level_1_imagem;
 extern ALLEGRO_BITMAP* cutscene_2_imagem;
 extern ALLEGRO_BITMAP* level_2_imagem;
+extern ALLEGRO_BITMAP* cutscene_3_imagem;
 extern ALLEGRO_BITMAP* level_3_imagem;
+extern ALLEGRO_BITMAP* cutscene_4_imagem;
 extern ALLEGRO_BITMAP* game_over_imagem;
+extern ALLEGRO_BITMAP* explicacao_imagem_1;
+extern ALLEGRO_BITMAP* explicacao_imagem_2;
+extern ALLEGRO_BITMAP* explicacao_imagem_3;
+extern ALLEGRO_BITMAP* final_imagem;
 
 
 

@@ -81,19 +81,25 @@ void desenhar_jogo()
         }
     }
 
+    else if (cena_atual == CENA_EXPLICACAO_1)
+    {
+        al_draw_bitmap(explicacao_imagem_1, 0, 0, 0);
+    }
+
     else if (cena_atual == CENA_LEVEL_1)
     {
         al_draw_bitmap(level_1_imagem, 0, 0, 0);
 
 
 
-        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), 400, 130, 0, "PONTOS: %d", pontos);
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), 390, 130, 0, "PONTOS: %d", pontos);
 
 
+        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 170, 0, "Nota para passar: %d pontos", MAX_SCORE);
+        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 190, 0, "Lembre da aula de hoje ->");
+        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 570, 265, 0, "Ass: O Professor");
 
-        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 180, 0, "Alunos, ACERTEM as equacoes corretas para ganhar pontos");
-        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 390, 210, 0, "Nota para passar: 100 pontos");
-        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), 570, 250, 0, "Ass: O Professor");
+
 
 
 
@@ -124,25 +130,141 @@ void desenhar_jogo()
         }
     }
 
+    else if (cena_atual == CENA_EXPLICACAO_2)
+    {
+        al_draw_bitmap(explicacao_imagem_2, 0, 0, 0);
+    }
+
     else if (cena_atual == CENA_LEVEL_2)
     {
-       al_draw_bitmap(level_2_imagem, 0, 0, 0);
+        al_draw_bitmap(level_2_imagem, 0, 0, 0);
 
-       al_draw_bitmap(fileiras[fileira_ativa].img, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, 0);
+        al_draw_bitmap(fileiras[fileira_ativa].img, fileiras[fileira_ativa].x, fileiras[fileira_ativa].y, 0);
 
-       char texto[100]; // cria um buffer de texto
-       snprintf(texto, sizeof(texto), "Acerte o animal - %s: %s",
-           infofileiras[fileira_ativa].Tipo,
-           infofileiras[fileira_ativa].termo);
+        char texto1[100]; // cria um buffer de texto
+        snprintf(texto1, sizeof(texto1), "Acerte o animal - %s: %s", infofileiras[fileira_ativa].Tipo, infofileiras[fileira_ativa].termo);
+
+        char texto2[100];
+        snprintf(texto2, sizeof(texto2), "Dica: %s", infofileiras[fileira_ativa].dica);
 
 
-	   al_draw_text(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, texto) / 2, 300, 0, texto);
-       
+        al_draw_text(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, texto1) / 2, 500, 0, texto1);
+
+        al_draw_text(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, texto2) / 2, 530, 0, texto2);
+
+    }
+
+    else if (cena_atual == CENA_CUTSCENE3)
+    {
+        al_draw_filled_rectangle(0, 0, TELA_W, TELA_H, al_map_rgb(0, 0, 0)); // fundo preto
+
+        for (i = 0; i <= cutscene_quadrante_atual; i++) // desenha quadrantes ja revelados
+        {
+            int dest_x = (i % 2 == 0) ? (TELA_W / 2 - tamanho_quadrante_cutscene) : (TELA_W / 2); // esquerda ou direita
+            int dest_y = (i < 2) ? (TELA_H / 2 - tamanho_quadrante_cutscene) : (TELA_H / 2); // cima ou baixo
+
+            al_draw_tinted_bitmap_region(
+                cutscene_3_imagem,
+                al_map_rgba_f(1, 1, 1, alpha_quadrante[i]),
+                tamanho_quadrante_cutscene * i, 0,
+                tamanho_quadrante_cutscene, tamanho_quadrante_cutscene,
+                dest_x, dest_y, 0
+            ); // desenha o quadrante com o alpha atual
+        }
+    }
+
+    else if (cena_atual == CENA_EXPLICACAO_3)
+    {
+        al_draw_bitmap(explicacao_imagem_3, 0, 0, 0);
     }
 
     else if (cena_atual == CENA_LEVEL_3)
     {
         al_draw_bitmap(level_3_imagem, 0, 0, 0);
+
+        char texto1[100];
+        snprintf(texto1, sizeof(texto1), "Pergunta %d:", pergunta_ativa + 1);
+
+        char pergunta[100];
+        snprintf(pergunta, sizeof(pergunta), "%s", perguntas[pergunta_ativa].pergunta);
+
+        // Guarda as alternativas
+        char alternativa1[100];
+        char alternativa2[100];
+        char alternativa3[100];
+        char alternativa4[100];
+
+        snprintf(alternativa1, sizeof(alternativa1), "%s", perguntas[pergunta_ativa].opcoes[0]);
+        snprintf(alternativa2, sizeof(alternativa2), "%s", perguntas[pergunta_ativa].opcoes[1]);
+        snprintf(alternativa3, sizeof(alternativa3), "%s", perguntas[pergunta_ativa].opcoes[2]);
+        snprintf(alternativa4, sizeof(alternativa4), "%s", perguntas[pergunta_ativa].opcoes[3]);
+
+        int largura_tela = 98;
+        int altura_tela = 58;
+
+        // === TELA 1: X - 100 | Y - 400 ===
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255),
+            100 + largura_tela / 2 - al_get_text_width(fonte_gameOver, alternativa1) / 2,
+            400 + altura_tela / 2 - al_get_font_line_height(fonte_gameOver) / 2,
+            0, alternativa1);
+
+        // === TELA 2: X - 375 | Y - 275 ===
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255),
+            375 + largura_tela / 2 - al_get_text_width(fonte_gameOver, alternativa2) / 2,
+            275 + altura_tela / 2 - al_get_font_line_height(fonte_gameOver) / 2,
+            0, alternativa2);
+
+        // === TELA 3: X - (TELA_W - largura_tela - 375) | Y - 275 ===
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255),
+            TELA_W - largura_tela - 375 + largura_tela / 2 - al_get_text_width(fonte_gameOver, alternativa3) / 2,
+            275 + altura_tela / 2 - al_get_font_line_height(fonte_gameOver) / 2,
+            0, alternativa3);
+
+        // === TELA 4: X - (TELA_W - largura_tela - 100) | Y - 400 ===
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255),
+            TELA_W - largura_tela - 100 + largura_tela / 2 - al_get_text_width(fonte_gameOver, alternativa4) / 2,
+            400 + altura_tela / 2 - al_get_font_line_height(fonte_gameOver) / 2,
+            0, alternativa4);
+
+        // Texto da pergunta
+        al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255),
+            TELA_W / 2 - al_get_text_width(fonte_instrucoes, texto1) / 2,
+            70, 0, texto1);
+
+
+        al_draw_textf(fonte_score, al_map_rgb(255, 255, 255),
+            TELA_W / 2 - al_get_text_width(fonte_score, pergunta) / 2,
+            TELA_H - al_get_font_line_height(fonte_score) - 70,
+            0, pergunta);
+    }
+
+    else if(cena_atual == CENA_CUTSCENE4)
+    {
+        al_draw_filled_rectangle(0, 0, TELA_W, TELA_H, al_map_rgb(0, 0, 0)); // fundo preto
+        for (i = 0; i <= cutscene_quadrante_atual; i++) // desenha quadrantes ja revelados
+        {
+            int dest_x = (i % 2 == 0) ? (TELA_W / 2 - tamanho_quadrante_cutscene) : (TELA_W / 2); // esquerda ou direita
+            int dest_y = (i < 2) ? (TELA_H / 2 - tamanho_quadrante_cutscene) : (TELA_H / 2); // cima ou baixo
+            al_draw_tinted_bitmap_region(
+                cutscene_4_imagem,
+                al_map_rgba_f(1, 1, 1, alpha_quadrante[i]),
+                tamanho_quadrante_cutscene * i, 0,
+                tamanho_quadrante_cutscene, tamanho_quadrante_cutscene,
+                dest_x, dest_y, 0
+            ); // desenha o quadrante com o alpha atual
+        }
+	}
+
+    else if(cena_atual == CENA_FIM_JOGO)
+    {
+		al_draw_bitmap(final_imagem, 0, 0, 0);
+
+		al_draw_textf(fonte_titulo, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_titulo, "Parabens") / 2, 100, 0, "Parabens!");
+        al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_gameOver, "Voce conquistou seu diploma") / 2, 250, 0, "Voce conquistou seu diploma");
+
+        al_draw_bitmap(botao_2, TELA_W / 2 - al_get_bitmap_width(botao_2) / 2, 650, 0);
+
+		al_draw_text(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_bitmap_width(botao_2) / 2 + (al_get_bitmap_width(botao_2) / 2) - (al_get_text_width(fonte_gameOver, "Voltar") / 2), 650 + (al_get_bitmap_height(botao_2) / 2) - (al_get_font_line_height(fonte_gameOver) / 2) - 7, 0, "Voltar");
     }
 
     else if (cena_atual == CENA_CONCLUSAO)
@@ -155,7 +277,7 @@ void desenhar_jogo()
             al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce passou de nivel com %d vida(s)!") / 2 + 10, 280, 0, "Voce passou de nivel com %d vida(s)!", personagem.vida);
             al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Clique no botao para passar.") / 2 + 10, 320, 0, "Clique no botao para passar.");
         }
-        else if (cena_atual_temp == CENA_LEVEL_2)
+        else if (cena_atual_temp == CENA_LEVEL_2 || cena_atual_temp == CENA_LEVEL_3)
         {
             al_draw_textf(fonte_gameOver, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_gameOver, "Conseguiu!") / 2, 200, 0, "Conseguiu!");
             al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Voce passou de nivel com %d vida(s)!") / 2 + 10, 280, 0, "Voce passou de nivel com %d vida(s)!", personagem.vida);
@@ -163,6 +285,7 @@ void desenhar_jogo()
             al_draw_textf(fonte_instrucoes, al_map_rgb(255, 255, 255), TELA_W / 2 - al_get_text_width(fonte_instrucoes, "Clique no botao para passar.") / 2 + 10, 360, 0, "Clique no botao para passar.");
         }
     }
+
 
     else if (cena_atual == CENA_GAMEOVER)
     {
