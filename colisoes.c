@@ -123,7 +123,7 @@ void mouse_apertado(int botao, int x, int y)
         }
     }
 
-    else if (cena_atual == CENA_EXPLICACAO_1 || cena_atual == CENA_EXPLICACAO_2 || cena_atual == CENA_EXPLICACAO_3)
+    else if (cena_atual == CENA_EXPLICACAO_1 || cena_atual == CENA_EXPLICACAO_2 || cena_atual == CENA_EXPLICACAO_3 || cena_atual == CENA_EXPLICACAO_4)
     {
         if(botao == true)
         {

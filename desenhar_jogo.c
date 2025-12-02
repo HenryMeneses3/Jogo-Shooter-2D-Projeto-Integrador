@@ -178,6 +178,11 @@ void desenhar_jogo()
         al_draw_bitmap(explicacao_imagem_3, 0, 0, 0);
     }
 
+    else if (cena_atual == CENA_EXPLICACAO_4)
+    {
+		al_draw_bitmap(explicacao_imagem_4, 0, 0, 0);
+    }
+
     else if (cena_atual == CENA_LEVEL_3)
     {
         al_draw_bitmap(level_3_imagem, 0, 0, 0);

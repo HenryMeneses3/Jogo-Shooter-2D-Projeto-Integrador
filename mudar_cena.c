@@ -10,11 +10,21 @@
 
 void mudar_de_cena(int proxima_cena)
 {
-
-    if (cena_atual == CENA_LEVEL_1)
+    if(cena_atual == CENA_MENU && proxima_cena != CENA_COMO_JOGAR)
+    {
+        al_stop_sample(&tela_inicial_bgm_id);
+    }
+    else if (cena_atual == CENA_LEVEL_1)
     {
         al_stop_sample(&level_1_bgm_id);
-
+    }
+    else if (cena_atual == CENA_LEVEL_2)
+    {
+        al_stop_sample(&level_2_bgm_id);
+    }
+    else if (cena_atual == CENA_LEVEL_3) 
+    {
+        al_stop_sample(&level_3_bgm_id);
     }
     else if (cena_atual == CENA_GAMEOVER)
     {
@@ -23,6 +33,10 @@ void mudar_de_cena(int proxima_cena)
     else if (cena_atual == CENA_CONCLUSAO)
     {
         al_stop_sample(&conclusao_bgm_id);
+    }
+    else if (cena_atual == CENA_FIM_JOGO)
+    {
+        al_stop_sample(&tela_final_bgm_id);
     }
 
     cena_atual_temp = cena_atual;
@@ -35,6 +49,13 @@ void mudar_de_cena(int proxima_cena)
         if (!al_play_sample(game_over_bgm, 0.3, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &game_over_bgm_id))
         {
             perror("falha ao tocar audio: game_over_bgm");
+        }
+    }
+    else if (cena_atual == CENA_MENU)
+    {
+        if (!al_play_sample(tela_inicial_bgm, 0.3, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &tela_inicial_bgm_id)) 
+        {
+            perror("falha ao tocar audio: tela_inicial_bgm");
         }
     }
     else if (cena_atual == CENA_CONCLUSAO)
@@ -88,6 +109,12 @@ void mudar_de_cena(int proxima_cena)
 
     else if (cena_atual == CENA_LEVEL_2)
     {
+
+        if (!al_play_sample(level_2_bgm, 0.7, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &level_2_bgm_id))
+        {
+            perror("falha ao tocar audio: level_2_bgm");
+        }
+
         printf("Fase 2!\n\n");
         pontos = 0;
         personagem.vida = VIDA_INICIAL;
@@ -113,6 +140,11 @@ void mudar_de_cena(int proxima_cena)
 
     else if (cena_atual == CENA_LEVEL_3)
     {
+        if (!al_play_sample(level_3_bgm, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &level_3_bgm_id))
+        {
+            perror("falha ao tocar audio: level_3_bgm");
+        }
+
         printf("Fase 3!\n\n");
         pontos = 0;
 		pergunta_ativa = 0;
@@ -137,6 +169,14 @@ void mudar_de_cena(int proxima_cena)
     else if (cena_atual == CENA_CONCLUSAO)
     {
         personagem.vida = personagem.vida; // mantém a vida do personagem
+    }
+
+    else if (cena_atual == CENA_FIM_JOGO) 
+    {
+        if (!al_play_sample(tela_final_bgm, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &tela_final_bgm_id))
+        {
+            perror("falha ao tocar audio: tela_final_bgm");
+        }
     }
 }
 

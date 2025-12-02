@@ -45,6 +45,7 @@ extern ALLEGRO_BITMAP* game_over_imagem;
 extern ALLEGRO_BITMAP* explicacao_imagem_1;
 extern ALLEGRO_BITMAP* explicacao_imagem_2;
 extern ALLEGRO_BITMAP* explicacao_imagem_3;
+extern ALLEGRO_BITMAP* explicacao_imagem_4;
 extern ALLEGRO_BITMAP* final_imagem;
 
 
@@ -55,8 +56,16 @@ extern ALLEGRO_BITMAP* vida_imagem;
 extern ALLEGRO_BITMAP* ataque_imagem;
 
 // sons
+extern ALLEGRO_SAMPLE* tela_inicial_bgm;
+extern ALLEGRO_SAMPLE_ID tela_inicial_bgm_id;
 extern ALLEGRO_SAMPLE* level_1_bgm;
 extern ALLEGRO_SAMPLE_ID level_1_bgm_id;
+extern ALLEGRO_SAMPLE* level_2_bgm;
+extern ALLEGRO_SAMPLE_ID level_2_bgm_id;
+extern ALLEGRO_SAMPLE* level_3_bgm;
+extern ALLEGRO_SAMPLE_ID level_3_bgm_id;
+extern ALLEGRO_SAMPLE* tela_final_bgm;
+extern ALLEGRO_SAMPLE_ID tela_final_bgm_id;
 extern ALLEGRO_SAMPLE* conclusao_bgm;
 extern ALLEGRO_SAMPLE_ID conclusao_bgm_id;
 extern ALLEGRO_SAMPLE* game_over_bgm;

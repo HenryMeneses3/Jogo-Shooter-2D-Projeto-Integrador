@@ -74,14 +74,23 @@ ALLEGRO_BITMAP* game_over_botao;
 ALLEGRO_BITMAP* explicacao_imagem_1;
 ALLEGRO_BITMAP* explicacao_imagem_2;
 ALLEGRO_BITMAP* explicacao_imagem_3;
+ALLEGRO_BITMAP* explicacao_imagem_4;
 ALLEGRO_BITMAP* final_imagem;
 
+ALLEGRO_SAMPLE* tela_inicial_bgm;
+ALLEGRO_SAMPLE_ID tela_inicial_bgm_id;
 ALLEGRO_SAMPLE* level_1_bgm;
 ALLEGRO_SAMPLE_ID level_1_bgm_id;
+ALLEGRO_SAMPLE* level_2_bgm;
+ALLEGRO_SAMPLE_ID level_2_bgm_id;
+ALLEGRO_SAMPLE* level_3_bgm;
+ALLEGRO_SAMPLE_ID level_3_bgm_id;
 ALLEGRO_SAMPLE* conclusao_bgm;
 ALLEGRO_SAMPLE_ID conclusao_bgm_id;
 ALLEGRO_SAMPLE* game_over_bgm;
 ALLEGRO_SAMPLE_ID game_over_bgm_id;
+ALLEGRO_SAMPLE* tela_final_bgm;
+ALLEGRO_SAMPLE_ID tela_final_bgm_id;
 
 ALLEGRO_SAMPLE* botao_som;
 ALLEGRO_SAMPLE_ID botao_som_id;
@@ -295,7 +304,12 @@ void inicializar_cena(int cena)
             fprintf(stderr, "Erro ao carregar imagem da tela inicial!\n");
             exit(-1);
         }
-
+        tela_inicial_bgm = al_load_sample("./assets/Background_music/tela_inicial_background.ogg");
+        if (!tela_inicial_bgm)
+        {
+            fprintf(stderr, "Erro ao carregar audio: tela_inicial_background.ogg\n");
+            exit(-1);
+        }
         fonte_gameOver = al_load_ttf_font("./assets/fonteGameOver.ttf", 30, 0);
         if (!fonte_gameOver)
         {
@@ -470,6 +484,13 @@ void inicializar_cena(int cena)
             exit(-1);
         }
 
+        level_2_bgm = al_load_sample("./assets/Background_music/level_2_background.ogg");
+        if (!level_2_bgm)
+        {
+            fprintf(stderr, "Erro ao carregar audio: level_2_background.ogg\n");
+            exit(-1);
+        }
+
         fileiras[0].img = al_load_bitmap("./assets/Animais/fileira1.png");
         if (!fileiras[0].img)
         {
@@ -573,6 +594,16 @@ void inicializar_cena(int cena)
         }
     }
 
+    else if (cena == CENA_EXPLICACAO_4)
+    {
+        explicacao_imagem_4 = al_load_bitmap("./assets/explicacao4.png");
+        if (!explicacao_imagem_4)
+        {
+            fprintf(stderr, "Erro ao carregar imagem da explicacao 4!\n");
+            exit(-1);
+        }
+	}
+
     else if(cena == CENA_LEVEL_3)
     {
         printf("Iniciando level 3\n\n");
@@ -580,6 +611,12 @@ void inicializar_cena(int cena)
         if (!level_3_imagem)
         {
             fprintf(stderr, "Erro ao carregar imagem do terceiro mapa!\n");
+            exit(-1);
+        }
+        level_3_bgm = al_load_sample("./assets/Background_music/level_3_background.ogg");
+        if (!level_3_bgm)
+        {
+            fprintf(stderr, "Erro ao carregar audio: level_3_background.ogg\n");
             exit(-1);
         }
 		fonte_instrucoes = al_load_ttf_font("./assets/fonteGameOver.ttf", 45, 0);
@@ -647,6 +684,13 @@ void inicializar_cena(int cena)
             fprintf(stderr, "Erro ao carregar fonte do titulo!\n");
             exit(-1);
         }
+        tela_final_bgm = al_load_sample("./assets/Background_music/tela_final_background.ogg");
+        if (!tela_final_bgm)
+        {
+            fprintf(stderr, "Erro ao carregar audio: tela_final_background.ogg\n");
+            exit(-1);
+        }
+
     }
     
     else if(cena_atual == CENA_CONCLUSAO)
@@ -716,6 +760,7 @@ void destruir_cena(int cena)
         al_destroy_bitmap(tela_inicial_imagem);
         al_destroy_font(fonte_gameOver);
         al_destroy_font(fonte_titulo);
+        al_destroy_sample(tela_inicial_bgm);
     }
 
     else if(cena == CENA_COMO_JOGAR)
@@ -780,6 +825,7 @@ void destruir_cena(int cena)
     {
         printf("Destruindo level 2\n\n");
         al_destroy_bitmap(level_2_imagem);
+        al_destroy_sample(level_2_bgm);
         for(i = 0; i < MAX_FILEIRAS; i++)
         {
             al_destroy_bitmap(fileiras[i].img);
@@ -807,10 +853,17 @@ void destruir_cena(int cena)
         al_destroy_bitmap(explicacao_imagem_3);
     }
 
+    else if (cena == CENA_EXPLICACAO_4)
+    {
+        printf("Destruindo tutorial\n\n");
+        al_destroy_bitmap(explicacao_imagem_4);
+	}
+
     else if (cena == CENA_LEVEL_3)
     {
         printf("Destruindo level 3\n\n");
         al_destroy_bitmap(level_3_imagem);
+        al_destroy_sample(level_3_bgm);
       
     }
 
@@ -842,6 +895,14 @@ void destruir_cena(int cena)
         al_destroy_bitmap(game_over_imagem);
         al_destroy_sample(game_over_bgm);
         al_destroy_font(fonte_gameOver);
+    }
+
+    else if (cena == CENA_FIM_JOGO)
+    {
+        al_destroy_bitmap(final_imagem);
+        al_destroy_sample(tela_final_bgm);
+        al_destroy_font(fonte_gameOver);
+        al_destroy_font(fonte_titulo);
     }
 }
 
